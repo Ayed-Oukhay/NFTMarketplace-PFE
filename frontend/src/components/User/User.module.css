@@ -1,0 +1,24 @@
+.user {
+    border-top: solid 1px var(--line);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    padding-top: 1rem;
+    font-size: calc(var(--fs) * 0.8);
+    font-weight: var(--light);
+}
+
+.user img {
+    border: solid 1px white;
+    border-radius: 100%;
+    max-width: 1.5rem;
+    margin-right: 1rem;
+}
+
+.username {
+    color: white;
+}
+
+.username:hover {
+    color: var(--secondary);
+}

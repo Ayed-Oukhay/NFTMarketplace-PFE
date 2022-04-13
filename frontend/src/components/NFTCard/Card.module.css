@@ -1,0 +1,9 @@
+.nft-default-card {
+    font-family: var(--font-family);
+    background-color: var(--card-bg);
+    margin: 0 auto;
+    max-width: 20rem;
+    border-radius: var(--br);
+    box-shadow: 0 15px 10px 20px rgba(12, 23, 41, 1),
+      0 0 10px 30px rgba(12, 25, 44, 0.75);
+  }

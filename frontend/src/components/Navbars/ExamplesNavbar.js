@@ -2,11 +2,11 @@ import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import Modal from "../../views/examples/Authenticate";
 //import { Redirect } from 'react-router-dom'
-import MintNFT from "../../views/examples/MintNFT";
+//import MintNFT from "../../views/examples/MintNFT";
 
 // reactstrap components
 import {
-  Button,
+  //Button,
   Collapse,
   NavbarBrand,
   Navbar,

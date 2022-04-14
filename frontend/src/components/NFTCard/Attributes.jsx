@@ -34,7 +34,7 @@ const Attributes = (props) => {
                     <label style={{color:"white"}}>Type</label>
                     <input type="text" name="name" placeholder='Exp: Class' class="form-control" value={element.name || ""} onChange={e => handleChange(index, e)} />
                     <label style={{color:"white"}}>Value</label>
-                    <input type="text" name="value" placeholder='Exp: Warrior' class="form-control" value={element.email || ""} onChange={e => handleChange(index, e)} />
+                    <input type="text" name="value" placeholder='Exp: Warrior' class="form-control" value={element.value || ""} onChange={e => handleChange(index, e)} />
                     {
                         index ?
                             <button type="button" class="btn btn-danger" onClick={() => removeFormFields(index)}>Remove</button>

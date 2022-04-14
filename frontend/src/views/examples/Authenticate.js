@@ -63,7 +63,7 @@ const Modals = (props) => {
 
       // ------------------- Cheking if Metamask is installed and detected ------------------- 
       if (provider !== window.ethereum) {
-        console.error("Not window.ethereum provider. Do you have multiple wallet installed ?");
+        console.error("Not window.ethereum provider. Do you have multiple wallets installed ?");
       }
 
       setIsConnecting(true);

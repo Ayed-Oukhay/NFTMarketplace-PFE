@@ -3,7 +3,7 @@ import "./MintNFT.css";
 import { Input } from "reactstrap";
 import Select from 'react-select';
 import Attributes from '../../components/NFTCard/Attributes';
-//import Mint from '../../utils/interact';
+import ipfs from '../../utils/ipfs';
 
 // Components for the unlockable content section
 import Switch from '@mui/material/Switch';
@@ -15,19 +15,19 @@ import Footer from "components/Footer/Footer.js";
 
 import { pinJSONToIPFS } from '../../utils/pinata.js'; // used later to add metadata when creating an NFT
 
-// --------- Connecting to Alchemy and importing our smart contract ---------
+// ********** Connecting to Alchemy and importing our smart contract **********
 require('dotenv').config();
 const alchemykey = process.env.REACT_APP_ALCHEMY_KEY;
 const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(alchemykey);
-
-const contractABI = require('../../utils/contract-abi.json')
+// Specifying the contract info
+const contractABI = require('../../utils/contract-abi.json');
 const contractAddress = "0x4C4a07F737Bf57F6632B6CAB089B78f62385aCaE"; //A contract deployed on the Ropsten testnet
-// ----------------------------------------------------------------------------
+// *****************************************************************************
 
-// --------------- Checking connection to the wallet -----------------
+// ************ Checking connection to the wallet ************
 export const getCurrentWalletConnected = async () => {
-    if (window.ethereum) {
+    if (window.ethereum) { // Checking if metamask is even installed on the browser
         try {
             const addressArray = await window.ethereum.request({
                 method: "eth_accounts",
@@ -49,7 +49,7 @@ export const getCurrentWalletConnected = async () => {
                 status: "😥 " + err.message,
             };
         }
-    } else {
+    } else { // If the metamask browser extention is not installed
         return {
             address: "",
             status: (
@@ -67,25 +67,26 @@ export const getCurrentWalletConnected = async () => {
         };
     }
 };
-// ----------------------------------------------------------------------------
+// *****************************************************************************
 
-// ------------ Calling the Mint function in our smart contract --------------
-export const mintNFT = async (img, name, description) => {
-    // error handling
-    if (img.trim() === "" || (name.trim() === "" || description.trim() === "")) {
+// *************** Calling the Mint function in our smart contract ************
+export const mintNFT = async (img, name, description, extLink) => { 
+    // Cheking if all the required fields are filled
+    if (img === "" || (name.trim() === "" || description.trim() === "")) {
         return {
             success: false,
             status: "❗Please make sure all fields are completed before minting.",
         }
     }
 
-    // make metadata
+    // Creating the metadata
     const metadata = new Object();
     metadata.name = name;
     metadata.image = img;
     metadata.description = description;
+    metadata.externalLink = extLink;
 
-    // make pinata call
+    // Calling pinata to pin the metadata to IPFS
     const pinataResponse = await pinJSONToIPFS(metadata);
     if (!pinataResponse.success) {
         return {
@@ -98,14 +99,14 @@ export const mintNFT = async (img, name, description) => {
     // Initiating our contract with web3
     window.contract = await new web3.eth.Contract(contractABI, contractAddress);
 
-    //set up your Ethereum transaction
+    //setting up the Ethereum transaction
     const transactionParameters = {
         to: contractAddress, // Required except during contract publications.
         from: window.ethereum.selectedAddress, // must match user's active address.
-        'data': window.contract.methods.mintNFT(window.ethereum.selectedAddress, tokenURI).encodeABI()//make call to NFT smart contract 
+        'data': window.contract.methods.mintNFT(window.ethereum.selectedAddress, tokenURI).encodeABI()//make call to the NFT smart contract 
     };
 
-    //sign the transaction via Metamask
+    //signing the transaction via Metamask
     try {
         const txHash = await window.ethereum
             .request({
@@ -121,22 +122,26 @@ export const mintNFT = async (img, name, description) => {
             success: false,
             status: "😥 Something went wrong: " + error.message
         }
-
     }
 }
-// ---------------------------------------------------------------------------
+// *****************************************************************************
 
+// **************** Begining the Main function ****************
 export default function MintNFT() {
-    const [images, setImages] = useState([]);
-    const [imageURLs, setImageURLs] = useState([]);
+    //variable to handle the unlockable content section
     const [unlockable, setUnlockable] = useState(false);
 
     //State variables
     const [status, setStatus] = useState("");
     const [walletAddress, setWallet] = useState("");
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [img, setImg] = useState("");
+    const [name, setName] = useState(""); //metadata component
+    const [description, setDescription] = useState(""); //metadata component
+    const [img, setImg] = useState(""); //metadata component
+    const [extlink, setExtlink] = useState(""); //metadata component
+
+    // ------ Begining the image upload handling ------
+    const [images, setImages] = useState([]);
+    const [imageURLs, setImageURLs] = useState([]);
 
     useEffect(() => {
         if (images.length < 1) return;
@@ -145,15 +150,31 @@ export default function MintNFT() {
         setImageURLs(newImageUrls);
     }, [images]);
 
-    const onImageChange = (e) => {
-        setImages([...e.target.files]);
+    // Capturing the uploaded image
+    const onImageChange = (event) => {
+        setImages([...event.target.files]);
+        const file = event.target.files[0];
+        const reader = new window.FileReader();
+        reader.readAsArrayBuffer(file);
+        reader.onloadend = () => {
+            // uploading the image to ipfs and getting the hash
+            const imgBuffer = Buffer.from(reader.result);
+            ipfs.files.add(imgBuffer, (error, result) => {
+                if (error) {
+                    console.log(error);
+                } else {
+                    setImg("https://gateway.pinata.cloud/ipfs/"+result[0].hash);
+                }
+            })
+        };
     }
+    // ------ End of the image upload handling ------
 
-    const handleSubmit = (event) => {
+    const handleSubmit = (event) => { //for the form submit
         console.log("sucess");
     }
 
-    const blockchains = [
+    const blockchains = [ //for the blockchain selection dropdown
         { value: 'polygon', label: 'Polygon' },
         { value: 'solana', label: 'Solana' },
         { value: 'tron', label: 'Tron' },
@@ -164,18 +185,10 @@ export default function MintNFT() {
         setUnlockable(event.target.checked);
     };
 
-    const connectWalletPressed = async () => { // Function to check if the user is currently connected or not
-
-        const address = await getCurrentWalletConnected();
-        setStatus(address.status);
-        setWallet(address.address);
-
-    };
-
     const onMintPressed = async () => { // Function to mint the token once the form is submitted
         const address = await getCurrentWalletConnected();
         if (address.address !== "") {
-            const { status } = await mintNFT(img, name, description);
+            const { status } = await mintNFT(img, name, description, extlink);
             setStatus(status);
         }
         else {
@@ -191,7 +204,6 @@ export default function MintNFT() {
             {/* --------------- End Navbar --------------- */}
 
             <div className="wrapper">
-
                 {/* -------------- Begin NFT Creation Form ----------------- */}
                 <div className="content-center">
                     <section className="section section-lg">
@@ -202,10 +214,8 @@ export default function MintNFT() {
                                 <div className="form-group">
                                     <label for="uploadMedia">Choose an Image, Video, Audio, or a 3D Model *</label>
                                     <small id="uploadMediaHelp" class="form-text text-muted">File types supported: JPG, PNG, GIF, SVG, MP4, WEBM, MP3, WAV, OGG, GLB, GLTF. Max size: 100 MB</small>
-                                    {/* <img alt="..." src={require("../../assets/img/image.png").default} style={{width:200,height:200}}> */}
                                     <input type="file" class="form-control" id="uploadMedia" aria-describedby="uploadMediaHelp" onChange={onImageChange} required />
                                     {imageURLs.map(imageSrc => <img alt="..." src={imageSrc} style={{ width: 200, height: 200 }} />)}
-                                    {/* </img> */}
                                 </div>
                                 <div class="form-group" >
                                     <label for="exampleInputName">Name *</label>
@@ -214,7 +224,7 @@ export default function MintNFT() {
                                 <div class="form-group">
                                     <label for="exampleInputLink">External Link</label>
                                     <small id="uploadMediaHelp" class="form-text text-muted">This will allow you to include a link to this URL on this item's detail page, so that users can click to learn more about it. You are welcome to link to your own webpage with more details.</small>
-                                    <input type="text" class="form-control" id="exampleInputLink" placeholder="https://yoursite.com/item1/" onChange={(event) => setImg(event.target.value)} />
+                                    <input type="text" class="form-control" id="exampleInputLink" placeholder="https://yoursite.com/item1/" onChange={(event) => setExtlink(event.target.value)} />
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputDesc">Description</label>
@@ -265,7 +275,6 @@ export default function MintNFT() {
                                         options={blockchains}
                                     />
                                 </div>
-
                                 <button type="button" class="btn btn-primary" onClick={onMintPressed}>Create NFT</button>
                                 <p id="status">{status}</p>
                             </form>

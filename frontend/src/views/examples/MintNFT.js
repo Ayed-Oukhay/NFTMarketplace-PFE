@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "./MintNFT.css";
 import { Input } from "reactstrap";
 import Select from 'react-select';
-import Attributes from '../../components/NFTCard/Attributes';
 import ipfs from '../../utils/ipfs';
 
 // Components for the unlockable content section
@@ -58,8 +57,7 @@ export const getCurrentWalletConnected = async () => {
                         {" "}
                         🦊{" "}
                         <a target="_blank" href={`https://metamask.io/download.html`}>
-                            You must install Metamask, a virtual Ethereum wallet, in your
-                            browser.
+                            You must install Metamask, a virtual Ethereum wallet, in your browser.
                         </a>
                     </p>
                 </span>
@@ -69,8 +67,8 @@ export const getCurrentWalletConnected = async () => {
 };
 // *****************************************************************************
 
-// *************** Calling the Mint function in our smart contract ************
-export const mintNFT = async (img, name, description, extLink) => { 
+// *************** Calling the Mint function in our smart contract ***************
+export const mintNFT = async (img, name, description, extLink, attributes) => {
     // Cheking if all the required fields are filled
     if (img === "" || (name.trim() === "" || description.trim() === "")) {
         return {
@@ -85,6 +83,7 @@ export const mintNFT = async (img, name, description, extLink) => {
     metadata.image = img;
     metadata.description = description;
     metadata.externalLink = extLink;
+    metadata.attributes = attributes;
 
     // Calling pinata to pin the metadata to IPFS
     const pinataResponse = await pinJSONToIPFS(metadata);
@@ -138,6 +137,9 @@ export default function MintNFT() {
     const [description, setDescription] = useState(""); //metadata component
     const [img, setImg] = useState(""); //metadata component
     const [extlink, setExtlink] = useState(""); //metadata component
+    const [attributes, setAttributes] = useState([
+        { name: "", value: "" },
+    ]); //metadata component
 
     // ------ Begining the image upload handling ------
     const [images, setImages] = useState([]);
@@ -163,14 +165,28 @@ export default function MintNFT() {
                 if (error) {
                     console.log(error);
                 } else {
-                    setImg("https://gateway.pinata.cloud/ipfs/"+result[0].hash);
+                    setImg("https://ipfs.io/ipfs/" + result[0].hash);
+                    console.log(result[0].hash);
                 }
             })
         };
     }
     // ------ End of the image upload handling ------
 
+    // ------ Begining the NFT properties handling ------
+    let addFormFields = () => {
+        setAttributes([...attributes, { name: "", value: "" }])
+    }
+
+    let removeFormFields = (i) => {
+        let newAttributeValues = [...attributes];
+        newAttributeValues.splice(i, 1);
+        setAttributes(newAttributeValues)
+    }
+    // ------ Ending the NFT properties handling ------
+
     const handleSubmit = (event) => { //for the form submit
+        alert(JSON.stringify(attributes));
         console.log("sucess");
     }
 
@@ -181,14 +197,20 @@ export default function MintNFT() {
         { value: 'flow', label: 'Flow' }
     ]
 
-    const handleChange = (event) => { // Used for the unlockable content section
+    const handleChange = (i, event) => { // Used for the unlockable content section
         setUnlockable(event.target.checked);
+        // Detecting added NFT traits
+        let newAttributeValues = [...attributes];
+        newAttributeValues[i][event.target.name] = event.target.value;
+        setAttributes(newAttributeValues);
+        //console.log(i, event.target.name)
     };
 
     const onMintPressed = async () => { // Function to mint the token once the form is submitted
+        console.log("inputFields", attributes);
         const address = await getCurrentWalletConnected();
         if (address.address !== "") {
-            const { status } = await mintNFT(img, name, description, extlink);
+            const { status } = await mintNFT(img, name, description, extlink, attributes);
             setStatus(status);
         }
         else {
@@ -227,7 +249,7 @@ export default function MintNFT() {
                                     <input type="text" class="form-control" id="exampleInputLink" placeholder="https://yoursite.com/item1/" onChange={(event) => setExtlink(event.target.value)} />
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputDesc">Description</label>
+                                    <label for="exampleInputDesc">Description *</label>
                                     <small id="DescHelp" class="form-text text-muted">The description will be included on the item's detail page underneath its image.</small>
                                     <input type="text" class="form-control" id="exampleInputDesc" placeholder="Provide a detailed description of your item." onChange={(event) => setDescription(event.target.value)} />
                                 </div>
@@ -245,7 +267,22 @@ export default function MintNFT() {
                                     <label for="exampleFormControlColl">Properties</label>
                                     <small id="DescHelp" class="form-text text-muted">Add your NFT Traits.</small>
                                     <br />
-                                    <Attributes />
+                                    {/* ---------- Begin NFT Traits section ---------- */}
+                                    {attributes.map((element, index) => (
+                                        <div className="form-inline" key={index}>
+                                            <label style={{ color: "white", paddingRight: 20}}>Type</label>
+                                            <input type="text" name="name" placeholder='Exp: Class' class="form-control" value={element.name || ""} onChange={e => handleChange(index, e)} /> &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <label style={{ color: "white", paddingRight: 20 }}>Value</label>
+                                            <input type="text" name="value" placeholder='Exp: Warrior' class="form-control" value={element.value || ""} onChange={e => handleChange(index, e)} /> &nbsp;&nbsp;&nbsp;&nbsp;
+                                            {
+                                                index ?
+                                                    <button type="button" class="btn btn-danger" onClick={() => removeFormFields(index)}>Remove</button>
+                                                    : null
+                                            }
+                                        </div>
+                                    ))}
+                                    {/* ---------- End NFT Traits section ---------- */}
+                                    <button class="btn btn-secondary" type="button" onClick={() => addFormFields()}>+ Add Properties</button>
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleFormControlColl">Unlockable Content

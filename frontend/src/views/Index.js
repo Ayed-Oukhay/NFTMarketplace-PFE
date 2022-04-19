@@ -1,6 +1,6 @@
 import React from "react";
 
-import MainPage from "views/examples/LandingPage";
+//import MainPage from "views/examples/LandingPage";
 import MintNFT from "views/examples/MintNFT.js";
 
 export default function Index() {

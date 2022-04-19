@@ -4,16 +4,19 @@ import './Attributes.css'
 
 const Attributes = (props) => {
 
-    const [formValues, setFormValues] = useState([{ type: "", value: "" }]);
+    const [formValues, setFormValues] = useState([
+        { trait_type: "", value: "" }
+    ]);
 
     let handleChange = (i, e) => {
         let newFormValues = [...formValues];
         newFormValues[i][e.target.name] = e.target.value;
         setFormValues(newFormValues);
+        console.log(i, e.target.name)
     }
 
     let addFormFields = () => {
-        setFormValues([...formValues, { type: "", value: "" }])
+        setFormValues([...formValues, { trait_type: "", value: "" }])
     }
 
     let removeFormFields = (i) => {
@@ -25,6 +28,7 @@ const Attributes = (props) => {
     let handleSubmit = (event) => {
         event.preventDefault();
         alert(JSON.stringify(formValues));
+        console.log("inputFields", formValues);
     }
 
     return (

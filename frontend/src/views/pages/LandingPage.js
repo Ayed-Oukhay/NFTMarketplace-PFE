@@ -12,7 +12,7 @@ import {
 } from "reactstrap";
 
 // core components
-import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
+import Navbar from "components/Navbars/MainNavbar.js";
 import Footer from "components/Footer/Footer.js";
 
 //import bigChartData from "variables/charts.js";
@@ -28,7 +28,7 @@ export default function LandingPage() {
   return (
     <>
       {/* --------------- Begin Navbar --------------- */}
-      <ExamplesNavbar />
+      <Navbar />
       {/* --------------- End Navbar --------------- */}
 
       <div className="wrapper">

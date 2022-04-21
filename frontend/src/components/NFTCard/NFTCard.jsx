@@ -10,7 +10,7 @@ const NFTCard = (props) => {
       <div className="img-container">
         <img src={image} alt="cube light prism" className="card__img" />
         <div className="overlay">
-          <img className="hover-icon" src={imgHoverIcon} alt="eye icon" />
+          <img className="hover-icon" src={imgHoverIcon} alt="eye icon" style={{height:50, width:50}}/>
         </div>
       </div>
       <br/>

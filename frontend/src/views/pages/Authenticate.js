@@ -118,7 +118,7 @@ const Modals = (props) => {
             <CardHeader className="bg-transparent pb-5">
               {/* -------------------- Wallet sign in -------------------- */}
               <div className="text-center text-muted mb-4">
-                <small>Sign in via Wallets</small>
+                <small style={{color:"#304169"}}>Sign in via Wallets</small>
               </div>
               <center>
                 <UncontrolledDropdown>
@@ -133,25 +133,25 @@ const Modals = (props) => {
                       {/* -------------- Metamask Login btn -------------- */}
                       <DropdownItem href="#pablo" onClick={AuthBtnClick}>
                         <img alt="..." src={require("../../assets/img/metamask_logo.png").default} style={{ width: 40, height: 40 }} />
-                        Metamask
+                        &nbsp;&nbsp; Metamask
                       </DropdownItem>
                     </li>
                     <li>
                       <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>
                         <img alt="..." src={require("../../assets/img/phantom_logo.png").default} style={{ width: 40, height: 40 }} />
-                        Phantom
+                        &nbsp;&nbsp; Phantom
                       </DropdownItem>
                     </li>
                     <li>
                       <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>
                         <img alt="..." src={require("../../assets/img/tronlink_logo.png").default} style={{ width: 40, height: 40 }} />
-                        TronLink
+                        &nbsp;&nbsp; TronLink
                       </DropdownItem>
                     </li>
                     <li>
                       <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>
                         <img alt="..." src={require("../../assets/img/Blocto_logo.png").default} style={{ width: 33, height: 40 }} />
-                        Blocto
+                        &nbsp;&nbsp;&nbsp;&nbsp; Blocto
                       </DropdownItem>
                     </li>
                   </DropdownMenu>
@@ -163,7 +163,7 @@ const Modals = (props) => {
 
               {/* -------------------- Social Media sign in -------------------- */}
               <div className="text-muted text-center mt-2 mb-3">
-                <small>Or sign in with</small>
+                <small style={{color:"#304169"}}>Or sign in with</small>
               </div>
               <div className="btn-wrapper text-center">
                 <Button className="btn-neutral btn-icon" color="default" href="#" style={{ width: 40, height: 40, background: "none" }}>

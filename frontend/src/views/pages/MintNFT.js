@@ -9,10 +9,12 @@ import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 // core components
-import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
+import Navbar from "components/Navbars/MainNavbar.js";
 import Footer from "components/Footer/Footer.js";
 
 import { pinJSONToIPFS } from '../../utils/pinata.js'; // used later to add metadata when creating an NFT
+
+import BlockchainSelectionModal from "./BlockchainSelection";
 
 // ********** Connecting to Alchemy and importing our smart contract **********
 require('dotenv').config();
@@ -21,49 +23,91 @@ const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(alchemykey);
 // Specifying the contract info
 const contractABI = require('../../utils/contract-abi.json');
-const contractAddress = "0x4C4a07F737Bf57F6632B6CAB089B78f62385aCaE"; //A contract deployed on the Ropsten testnet
+const contractAddress = "0x7a1C29e5462989dB8680AaF5b9c1FeD6BDC16303"; //A contract deployed on the polygon Mumbai testnet
 // *****************************************************************************
 
 // ************ Checking connection to the wallet ************
 export const getCurrentWalletConnected = async () => {
-    if (window.ethereum) { // Checking if metamask is even installed on the browser
-        try {
-            const addressArray = await window.ethereum.request({
-                method: "eth_accounts",
-            });
-            if (addressArray.length > 0) {
-                return {
-                    address: addressArray[0],
-                    status: "👆🏽 Write a message in the text-field above.",
-                };
-            } else {
+    if (BlockchainSelectionModal.PolygonSelected) {
+        console.log("Polygon selected");
+        if (window.ethereum) { // Checking if metamask is even installed on the browser
+            try {
+                const addressArray = await window.ethereum.request({
+                    method: "eth_accounts",
+                });
+                if (addressArray.length > 0) {
+                    return {
+                        address: addressArray[0],
+                        status: "👆🏽 Write a message in the text-field above.",
+                    };
+                } else {
+                    return {
+                        address: "",
+                        status: "🦊 Connect to Metamask using the top right button.",
+                    };
+                }
+            } catch (err) {
                 return {
                     address: "",
-                    status: "🦊 Connect to Metamask using the top right button.",
+                    status: "😥 " + err.message,
                 };
             }
-        } catch (err) {
+        } else { // If the metamask browser extention is not installed
             return {
                 address: "",
-                status: "😥 " + err.message,
+                status: (
+                    <span>
+                        <p>
+                            {" "}
+                            🦊{" "}
+                            <a target="_blank" href={`https://metamask.io/download.html`}>
+                                You must install Metamask, a virtual Ethereum wallet, in your browser.
+                            </a>
+                        </p>
+                    </span>
+                ),
             };
         }
-    } else { // If the metamask browser extention is not installed
-        return {
-            address: "",
-            status: (
-                <span>
-                    <p>
-                        {" "}
-                        🦊{" "}
-                        <a target="_blank" href={`https://metamask.io/download.html`}>
-                            You must install Metamask, a virtual Ethereum wallet, in your browser.
-                        </a>
-                    </p>
-                </span>
-            ),
-        };
-    }
+    } else if (BlockchainSelectionModal.SolanaSelected) {
+        console.log("Solana selected");
+        if (window.solana && window.solana.isPhantom) { // Checking if phantom is even installed on the browser
+            try {
+                const addressArray = await window.solana.connect();
+                if (addressArray !== null) {
+                    return {
+                        address: addressArray.publicKey.toString(),
+                        status: "👆🏽 Write a message in the text-field above.",
+                    };
+                } else {
+                    return {
+                        address: "",
+                        status: "👻 Connect to Phantom using the top right button.",
+                    };
+                }
+            } catch (err) {
+                return {
+                    address: "",
+                    status: "😥 " + err.message,
+                };
+            }
+        } else { // If the phantom browser extention is not installed
+            return {
+                address: "",
+                status: (
+                    <span>
+                        <p>
+                            {" "}
+                            👻{" "}
+                            <a target="_blank" href={`https://phantom.app/download`}>
+                                You must install Phantom, a Solana-based wallet, in your browser.
+                            </a>
+                        </p>
+                    </span>
+                ),
+            };
+        }
+    }        
+    
 };
 // *****************************************************************************
 
@@ -114,7 +158,7 @@ export const mintNFT = async (img, name, description, extLink, attributes) => {
             });
         return {
             success: true,
-            status: "✅ Check out your transaction on Etherscan: https://ropsten.etherscan.io/tx/" + txHash
+            status: "✅ Check out your transaction on Polygonscan: https://mumbai.polygonscan.com/tx/" + txHash
         }
     } catch (error) {
         return {
@@ -190,15 +234,7 @@ export default function MintNFT() {
         console.log("sucess");
     }
 
-    const blockchains = [ //for the blockchain selection dropdown
-        { value: 'polygon', label: 'Polygon' },
-        { value: 'solana', label: 'Solana' },
-        { value: 'tron', label: 'Tron' },
-        { value: 'flow', label: 'Flow' }
-    ]
-
     const handleChange = (i, event) => { // Used for the unlockable content section
-        setUnlockable(event.target.checked);
         // Detecting added NFT traits
         let newAttributeValues = [...attributes];
         newAttributeValues[i][event.target.name] = event.target.value;
@@ -206,8 +242,12 @@ export default function MintNFT() {
         //console.log(i, event.target.name)
     };
 
+    const handleChangeUnlockableContent = (event) => { // Used for the unlockable content section
+        setUnlockable(event.target.checked);
+    };
+
     const onMintPressed = async () => { // Function to mint the token once the form is submitted
-        console.log("inputFields", attributes);
+        //console.log("inputFields", attributes);
         const address = await getCurrentWalletConnected();
         if (address.address !== "") {
             const { status } = await mintNFT(img, name, description, extlink, attributes);
@@ -219,10 +259,24 @@ export default function MintNFT() {
         }
     };
 
+    const ChangeCurrentBlockchain = () => {
+        // if (event.target.value === "rinkeby") {
+        //     setContractAddress("0x8d12a197cb00d4747a1fe03395095ce2a5cc6819");
+        // }
+        // else if (event.target.value === "mainnet") {
+        //     setContractAddress("0x8d12a197cb00d4747a1fe03395095ce2a5cc6819");
+        // }
+        return (
+            <>
+                <BlockchainSelectionModal />
+            </>
+        )
+    }
+
     return (
         <>
             {/* --------------- Begin Navbar --------------- */}
-            <ExamplesNavbar />
+            <Navbar />
             {/* --------------- End Navbar --------------- */}
 
             <div className="wrapper">
@@ -244,7 +298,7 @@ export default function MintNFT() {
                                     <input type="text" class="form-control" id="exampleInputName" aria-describedby="NameHelp" placeholder="Enter NFT name" onChange={(event) => setName(event.target.value)} required />
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputLink">External Link</label>
+                                    <label for="exampleInputLink">External Link (optional)</label>
                                     <small id="uploadMediaHelp" class="form-text text-muted">This will allow you to include a link to this URL on this item's detail page, so that users can click to learn more about it. You are welcome to link to your own webpage with more details.</small>
                                     <input type="text" class="form-control" id="exampleInputLink" placeholder="https://yoursite.com/item1/" onChange={(event) => setExtlink(event.target.value)} />
                                 </div>
@@ -254,7 +308,7 @@ export default function MintNFT() {
                                     <input type="text" class="form-control" id="exampleInputDesc" placeholder="Provide a detailed description of your item." onChange={(event) => setDescription(event.target.value)} />
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleFormControlColl">Collection</label>
+                                    <label for="exampleFormControlColl">Collection (optional)</label>
                                     <small id="DescHelp" class="form-text text-muted">This is the collection where your item will appear.</small>
                                     <select class="form-control" id="exampleColl">
                                         <option style={{ backgroundImage: "../../assets/img/image.png", width: 20, height: 20 }}>PhotographyCollection#123</option>
@@ -264,13 +318,13 @@ export default function MintNFT() {
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleFormControlColl">Properties</label>
+                                    <label for="exampleFormControlColl">Properties (optional)</label>
                                     <small id="DescHelp" class="form-text text-muted">Add your NFT Traits.</small>
                                     <br />
                                     {/* ---------- Begin NFT Traits section ---------- */}
                                     {attributes.map((element, index) => (
                                         <div className="form-inline" key={index}>
-                                            <label style={{ color: "white", paddingRight: 20}}>Type</label>
+                                            <label style={{ color: "white", paddingRight: 20 }}>Type</label>
                                             <input type="text" name="name" placeholder='Exp: Class' class="form-control" value={element.name || ""} onChange={e => handleChange(index, e)} /> &nbsp;&nbsp;&nbsp;&nbsp;
                                             <label style={{ color: "white", paddingRight: 20 }}>Value</label>
                                             <input type="text" name="value" placeholder='Exp: Warrior' class="form-control" value={element.value || ""} onChange={e => handleChange(index, e)} /> &nbsp;&nbsp;&nbsp;&nbsp;
@@ -291,7 +345,7 @@ export default function MintNFT() {
                                     <br />
                                     <FormControlLabel
                                         control={
-                                            <Switch checked={unlockable} onChange={handleChange} aria-label="login switch" />
+                                            <Switch checked={unlockable} onChange={handleChangeUnlockableContent} aria-label="login switch" />
                                         }
                                         label={unlockable ? <Input class="form-control" placeholder="Enter Content (Access key, Redeem code, link to a file,...)." rows="3" type="textarea" /> : <Input class="form-control" placeholder="Enter Content (Access key, Redeem code, link to a file,...)." rows="3" type="textarea" hidden />}
                                     />
@@ -303,16 +357,12 @@ export default function MintNFT() {
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleFormControlColl">Blockchain</label>
-                                    <Select
-                                        class="form-control"
-                                        // className="basic-single"
-                                        classNamePrefix="select Blockchain"
-                                        defaultValue={blockchains[0]}
-                                        name="blockchain"
-                                        options={blockchains}
-                                    />
+                                    <small id="DescHelp" class="form-text text-muted">If you want to change your current Blockchain, you can click this button.</small>
+                                    {/* <BlockchainSelectionModal style={{ display: "flex", margin: "auto" }} value="Change Blockchain"/> */}
+                                    <button class="btn btn-warning" type="button" onClick={ChangeCurrentBlockchain} style={{ padding: 11 }}><i className="tim-icons icon-alert-circle-exc" style={{ marginRight: 7 }} />Change Blockchain</button>
                                 </div>
-                                <button type="button" class="btn btn-primary" onClick={onMintPressed}>Create NFT</button>
+                                <br />
+                                <button type="button" class="btn btn-primary" onClick={onMintPressed}><i className="tim-icons icon-check-2" /> &nbsp;&nbsp; Create NFT</button>
                                 <p id="status">{status}</p>
                             </form>
                         </section>
@@ -329,3 +379,4 @@ export default function MintNFT() {
         </>
     );
 }
+// **************** Ending the Main function ****************

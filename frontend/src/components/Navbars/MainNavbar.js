@@ -1,8 +1,9 @@
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
-import Modal from "../../views/examples/Authenticate";
+import Modal from "../../views/pages/Authenticate";
 //import { Redirect } from 'react-router-dom'
 //import MintNFT from "../../views/examples/MintNFT";
+import BlockchainSelectionModal from "../../views/pages/BlockchainSelection";
 
 // reactstrap components
 import {
@@ -22,10 +23,11 @@ import {
   UncontrolledDropdown,
 } from "reactstrap";
 
-export default function ExamplesNavbar() {
+export default function PageNavbar() {
   const [collapseOpen, setCollapseOpen] = React.useState(false);
   const [collapseOut, setCollapseOut] = React.useState("");
   const [color, setColor] = React.useState("navbar-transparent");
+
   // Accessing the history instance created by React
   const history = useHistory();
   React.useEffect(() => {
@@ -68,11 +70,7 @@ export default function ExamplesNavbar() {
             <img src={require("../../assets/img/logoTNM-01.png").default} alt="logo" style={{ width: 135, height: 50 }} />
           </NavbarBrand>
 
-          <button
-            aria-expanded={collapseOpen}
-            className="navbar-toggler navbar-toggler"
-            onClick={toggleCollapse}
-          >
+          <button aria-expanded={collapseOpen} className="navbar-toggler navbar-toggler" onClick={toggleCollapse}>
             <span className="navbar-toggler-bar bar1" />
             <span className="navbar-toggler-bar bar2" />
             <span className="navbar-toggler-bar bar3" />
@@ -105,8 +103,8 @@ export default function ExamplesNavbar() {
           </div>
           <Nav navbar>
             <UncontrolledDropdown>
-              <DropdownToggle style={{ width: 130, height: 36 }}>
-                Explore
+              <DropdownToggle style={{ width: 110, height: 36, padding: 0 }}>
+                <i className="tim-icons icon-planet" /> &nbsp; Explore
               </DropdownToggle>
               <DropdownMenu>
                 <li>
@@ -142,6 +140,9 @@ export default function ExamplesNavbar() {
               </NavLink>
             </NavItem>
             <NavItem>
+              <BlockchainSelectionModal style={{ display: "flex", margin: "auto" }} />
+            </NavItem>
+            {/* <NavItem>
               <UncontrolledDropdown>
                 <DropdownToggle style={{ width: 160, height: 37 }}>
                   <i className="tim-icons icon-spaceship" />
@@ -160,7 +161,7 @@ export default function ExamplesNavbar() {
                   </li>
                 </DropdownMenu>
               </UncontrolledDropdown>
-            </NavItem>
+            </NavItem> */}
 
             <NavItem>
               <Modal style={{ display: "flex", margin: "auto" }} />
@@ -168,8 +169,8 @@ export default function ExamplesNavbar() {
 
             <NavItem>
               <UncontrolledDropdown>
-                <DropdownToggle style={{ background: "none" }} >
-                  <img alt="..." src={require("../../assets/img/user.png").default} style={{ width: 30, height: 30 }} />
+                <DropdownToggle style={{ background: "none", padding:0, marginTop:5 }} >
+                  <img alt="..." src={require("../../assets/img/user.png").default} style={{ width: 30, height: 30}} />
                 </DropdownToggle>
                 <DropdownMenu>
                   <li>

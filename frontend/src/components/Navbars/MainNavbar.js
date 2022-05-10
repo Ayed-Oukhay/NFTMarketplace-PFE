@@ -174,7 +174,7 @@ export default function PageNavbar() {
                 </DropdownToggle>
                 <DropdownMenu>
                   <li>
-                    <DropdownItem href="#" onClick={e => e.preventDefault()}>
+                    <DropdownItem to="/profile-page" tag={Link}>
                       Profile
                     </DropdownItem>
                   </li>

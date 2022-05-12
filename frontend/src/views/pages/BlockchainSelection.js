@@ -43,7 +43,17 @@ const BlockchainSelectionModal = (props) => {
                 await provider.request({
                     method: "eth_requestAccounts",
                 });
-                history.push("/mint-nft"); // redirecting to the mint nft page
+                // ------------------- Creating the user and adding it to the database -------------------
+                const userObject = {
+                    walletAddresses: accounts[0]
+                };
+                axios.post('http://localhost:7000/user', userObject).then((res) => {
+                    console.log(res.data)
+                }).catch((error) => {
+                    console.log(error)
+                });
+                // --------------------------- Redirecting the user to the mint nft page ---------------------------------
+                history.push("/mint-nft");
                 setIsConnected(true);
             } else {
                 history.push("/mint-nft");

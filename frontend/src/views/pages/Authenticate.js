@@ -92,8 +92,6 @@ const Modals = (props) => {
       }
 
       // ------------------- Creating the user and adding it to the database -------------------
-      // const web3 = new Web3(provider);
-      // const accounts = await web3.eth.getAccounts()
       // const userObject = {
       //   publicAddress: accounts[0]
       // };

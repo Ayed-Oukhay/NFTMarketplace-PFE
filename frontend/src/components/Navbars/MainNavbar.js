@@ -7,7 +7,6 @@ import BlockchainSelectionModal from "../../views/pages/BlockchainSelection";
 
 // reactstrap components
 import {
-  //Button,
   Collapse,
   NavbarBrand,
   Navbar,
@@ -21,6 +20,7 @@ import {
   DropdownMenu,
   DropdownItem,
   UncontrolledDropdown,
+  Button,
 } from "reactstrap";
 
 export default function PageNavbar() {
@@ -30,12 +30,14 @@ export default function PageNavbar() {
 
   // Accessing the history instance created by React
   const history = useHistory();
+
   React.useEffect(() => {
     window.addEventListener("scroll", changeColor);
     return function cleanup() {
       window.removeEventListener("scroll", changeColor);
     };
   }, []);
+
   const changeColor = () => {
     if (
       document.documentElement.scrollTop > 99 ||
@@ -49,18 +51,30 @@ export default function PageNavbar() {
       setColor("navbar-transparent");
     }
   };
+
   const toggleCollapse = () => {
     document.documentElement.classList.toggle("nav-open");
     setCollapseOpen(!collapseOpen);
   };
+
   const onCollapseExiting = () => {
     setCollapseOut("collapsing-out");
   };
+
   const onCollapseExited = () => {
     setCollapseOut("");
   };
+
+  // Redirecting to the NFT minting page
   const MintNFTPage = () => {
     history.push("/mint-nft");
+  };
+
+  const CreateSmartContract = () => {
+    // Checking if the user is currently connected to a wallet 
+    // if wallet redirect to smart contract creation form
+    history.push("/create-smart-contract");
+    // else alert "You're not currently connected to any wallet."
   }
   return (
     <Navbar className={"fixed-top " + color} color-on-scroll="100" expand="lg">
@@ -163,14 +177,19 @@ export default function PageNavbar() {
               </UncontrolledDropdown>
             </NavItem> */}
 
-            <NavItem>
+            {/* <NavItem>
               <Modal style={{ display: "flex", margin: "auto" }} />
+            </NavItem> */}
+
+
+            <NavItem>
+              <Button onClick={CreateSmartContract} className="nav-link d-none d-lg-block" color="secondary" type="button" style={{ width: 130 }}><i className="tim-icons icon-single-copy-04" />Create SC</Button>
             </NavItem>
 
             <NavItem>
               <UncontrolledDropdown>
-                <DropdownToggle style={{ background: "none", padding:0, marginTop:5 }} >
-                  <img alt="..." src={require("../../assets/img/user.png").default} style={{ width: 30, height: 30}} />
+                <DropdownToggle style={{ background: "none", padding: 0, marginTop: 5 }} >
+                  <img alt="..." src={require("../../assets/img/user.png").default} style={{ width: 30, height: 30 }} />
                 </DropdownToggle>
                 <DropdownMenu>
                   <li>

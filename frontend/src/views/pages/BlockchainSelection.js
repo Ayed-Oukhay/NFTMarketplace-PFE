@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom';
 import { Button, Card, CardHeader } from "reactstrap";
 import Web3 from 'web3';
 import * as fcl from "@onflow/fcl"; // used to call and configure the flow wallet (Blocto)
+import axios from 'axios';
 
 const style = {
     position: 'absolute',
@@ -187,7 +188,7 @@ const BlockchainSelectionModal = (props) => {
 
     return (
         <div>
-            <Button onClick={handleOpen} className="nav-link d-none d-lg-block" color="secondary" type="button" style={{ width: 110 }}><i className="tim-icons icon-molecule-40" />Create</Button>
+            <Button onClick={handleOpen} className="nav-link d-none d-lg-block" color="secondary" type="button" style={{ width: 130 }}><i className="tim-icons icon-molecule-40" />Create NFT</Button>
             <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description" >
                 <Box sx={style}>
                     <Card className="bg-secondary shadow border-0" >

@@ -73,6 +73,23 @@ router.route('/:id/addwallet').put((req, res, next) => {
     })
 })
 
+// ----------- Adding a smart contract address to a user -------------
+router.route('/:id/addcontract').put((req, res, next) => {
+    user.findByIdAndUpdate(req.params.id, {
+        $addToSet: { 
+            smartContracts: req.body.smartContracts
+        }
+    }, (error, data) => {
+        if (error) {
+            return next(error);
+            console.log(error)
+        } else {
+            res.json(data)
+            console.log('Smart contract address added successfully!')
+        }
+    })
+})
+
 // ----------- Delete user -------------
 router.route('/:id').delete((req, res, next) => {
     user.findByIdAndRemove(req.params.id, (error, data) => {

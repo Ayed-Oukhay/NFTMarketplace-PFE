@@ -7,6 +7,8 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+// Here we need to get the contract object sent from the frontend React app and replace the properties of the contract hereunder
+
 // Accessing the Ownable method ensures that only the creator of the smart contract can interact with it
 contract NFT is ERC721, Ownable {
     using Counters for Counters.Counter;

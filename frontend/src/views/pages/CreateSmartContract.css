@@ -9,3 +9,12 @@ label {
 small {
     color: #f1eef7;
 }
+
+.topping {
+    margin-top: 0.3rem;
+    vertical-align: text-bottom;
+}
+
+.result {
+    margin-top: 1rem;
+}

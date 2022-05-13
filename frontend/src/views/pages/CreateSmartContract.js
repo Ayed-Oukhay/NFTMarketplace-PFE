@@ -4,7 +4,9 @@ import "./MintNFT.css";
 // core components
 import Navbar from "components/Navbars/MainNavbar.js";
 import Footer from "components/Footer/Footer.js";
-import {UncontrolledTooltip} from "reactstrap";
+import { UncontrolledTooltip } from "reactstrap";
+import { FeaturesList } from "../../utils/features";
+import axios from "axios";
 
 require('dotenv').config();
 
@@ -44,7 +46,7 @@ export const getCurrentWalletConnected = async () => {
 // *****************************************************************************
 
 // *************** Calling the deploy and verifying the form fields ***************
-export const deploySC = async (name, symbol, access, license) => {
+export const deploySC = async (name, symbol, baseuri, features, access, license) => {
     // Cheking if all the required fields are filled
     if (name.trim() === "" || symbol.trim() === "" || access.trim() === "" || license.trim() === "") {
         return {
@@ -52,12 +54,28 @@ export const deploySC = async (name, symbol, access, license) => {
             status: "❗Please make sure all fields are completed before deploying your smart contract.",
         }
     } else {
-        // Check if the transaction passed in the backend and retunr the transaction hash
+        // Creating the smart contract object
+        const contractObject = {
+            name: name,
+            symbol: symbol,
+            baseuri: baseuri,
+            features: features,
+            access: access,
+            license: license,
+        };
+        // Sending the smart contract object to the backend to be treated and the ndeployed
+        axios.post('http://localhost:7000/contract', contractObject).then(res => {
+            console.log(res.data);
+        }).catch((error) => {
+            console.log(error)
+        });
+        // Checking if the transaction passed in the backend and retunr the transaction hash
+        // const txhash = ... ;
         // if (...) {
-        return {
-            success: true,
-            status: "✅ Check out your transaction on Polygonscan: https://mumbai.polygonscan.com/tx/",
-        }
+        // return {
+        //     success: true,
+        //     status: "✅ Check out your transaction on Polygonscan: https://mumbai.polygonscan.com/tx/" + txHash,
+        // }
         // } else {
         //    return {
         //        success: false,
@@ -106,29 +124,47 @@ export default function Deploy() {
                             <small id="uploadMediaHelp" class="form-text text-muted">* Required fields</small>
                             <br />
                             <form>
+                                {/* ----------------- Name section ----------------- */}
                                 <div class="form-group" >
                                     <label for="exampleInputName">Name *</label>
                                     <input type="text" class="form-control" id="exampleInputName" aria-describedby="NameHelp" placeholder="MyToken" onChange={(event) => setName(event.target.value)} required />
                                 </div>
+                                {/* ----------------- Symbol section ----------------- */}
                                 <div class="form-group">
                                     <label for="exampleInputLink">Symbol *</label>
                                     <input type="text" class="form-control" id="exampleInputLink" placeholder="MTK" onChange={(event) => setSymbol(event.target.value)} />
                                 </div>
+                                {/* ----------------- Base URI section ----------------- */}
                                 <div class="form-group">
                                     <label for="exampleInputDesc">Base URI (optional)</label>
                                     <small id="DescHelp" class="form-text text-muted">Will be concatenated with token IDs to generate the token URIs.</small>
                                     <input type="text" class="form-control" id="exampleInputBaseUri" placeholder="https://..." onChange={(event) => setBaseURI(event.target.value)} />
                                 </div>
+                                {/* ----------------- Features section ----------------- */}
                                 <div class="form-group">
                                     <label for="exampleFormControlColl">Features (optional)</label>
                                     <small id="DescHelp" class="form-text text-muted">You can choose the features that you want to add to your smart contractfrom the list below.</small>
-                                    {/* checkboxes with multiple choices allowed */}
+                                    {FeaturesList.map(({ name }, index) => {
+                                        return (
+                                            <div>
+                                                <input
+                                                    type="checkbox"
+                                                    id={`custom-checkbox-${index}`}
+                                                    name={name}
+                                                    value={name}
+                                                    onChange={(event) => setFeatures(event.target.value)}
+                                                /> &nbsp;&nbsp;
+                                                <label htmlFor={`custom-checkbox-${index}`}>{name}</label>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
+                                {/* ----------------- Access control section ----------------- */}
                                 <div class="form-group">
                                     <label for="exampleFormControlColl">Access Control *</label>
-                                    <small id="DescHelp" class="form-text text-muted">Control how/who has access to your smart contract.</small>
+                                    <small id="DescHelp" class="form-text text-muted">Control how to, or who has access to your smart contract.</small>
                                     <label>
-                                        <input type="radio" id="ownable_hover" value="Ownable" />
+                                        <input type="radio" id="ownable_hover" value="Ownable" onChange={(event) => setAccessControl(event.target.value)}/>
                                         &nbsp;&nbsp; Ownable
                                     </label>
                                     &nbsp;&nbsp;&nbsp;&nbsp;
@@ -146,9 +182,10 @@ export default function Deploy() {
                                         delay={0}
                                         placement="bottom"
                                         target="roles_hover">
-                                        Flexible mechanism with a separate role for each privileged action. 
+                                        Flexible mechanism with a separate role for each privileged action.
                                     </UncontrolledTooltip>
                                 </div>
+                                {/* ----------------- License section ----------------- */}
                                 <div class="form-group">
                                     <label for="exampleFormControlColl">License *</label>
                                     <input type="text" class="form-control" id="exampleInputName" aria-describedby="NameHelp" placeholder="MIT" onChange={(event) => setLicense(event.target.value)} />

@@ -11,7 +11,8 @@ const dbConfig = require('../config/db.config.js');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
-const UserRoute = require('./routes/userRoutes.js')
+const UserRoute = require('./routes/userRoutes.js');
+const ContractRoute = require('./routes/contractRoutes.js');
 
 dotenv.config();
 
@@ -51,7 +52,8 @@ mongoose.connect(dbConfig.url, {
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-app.use('/user', UserRoute)
+app.use('/user', UserRoute);
+app.use('/contract', ContractRoute);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true

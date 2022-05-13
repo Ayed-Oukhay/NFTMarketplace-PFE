@@ -2,7 +2,7 @@ const express = require('express')
 const UserController = require('../controllers/userController')
 const router = express.Router();
 const mongoose = require('mongoose');
-const user = require('../user/userModel');
+const user = require('../models/userModel');
 
 // ----------- Create user -------------
 router.route('/').post((req, res, next) => {

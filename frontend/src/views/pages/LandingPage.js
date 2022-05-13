@@ -284,14 +284,13 @@ export default function LandingPage() {
                   <Col lg="3">
                     <div className="info">
                       <div className="icon icon-warning">
-                        <i className="tim-icons icon-vector" />
+                        <i className="tim-icons icon-single-copy-04" />
                       </div>
-                      <h4 className="info-title">Create a collection</h4>
+                      <h4 className="info-title">Choose a smart contract or create your own</h4>
                       <hr className="line-warning" />
                       <p>
-                        Creating a collection and linking your NFT to it can help it gain more visibility. However, it's an optional feature,
-                        as you can leave your NFT as an independant one.
-                      </p>
+                        You can choose between deploying your NFT on TNM's own deployed smart contract or your own custom smart contract.
+                      </p> 
                     </div>
                   </Col>
                   <Col lg="3">

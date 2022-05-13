@@ -46,9 +46,14 @@ const BlockchainSelectionModal = (props) => {
                 });
                 // ------------------- Creating the user and adding it to the database -------------------
                 const userObject = {
-                    walletAddresses: accounts[0]
+                    $addToSet: { 
+                        walletAddresses: accounts[0] 
+                    }
                 };
                 axios.post('http://localhost:7000/user', userObject).then((res) => {
+
+                    //res.data.walletAddresses.Add(accounts[0]);
+                    
                     console.log(res.data)
                 }).catch((error) => {
                     console.log(error)

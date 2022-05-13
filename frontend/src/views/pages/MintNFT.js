@@ -358,6 +358,12 @@ export const getCurrentWalletConnected = async () => {
                                         <input type="number" class="form-control" id="exampleInputName" aria-describedby="NameHelp" placeholder="1" disabled />
                                     </div>
                                     <div class="form-group">
+                                        <label for="exampleFormControlColl">Smart contract</label>
+                                        <small id="DescHelp" class="form-text text-muted">You can either deploy your NFT on our TNM's smart contract, or you can choose one of your own own smart contract.</small>
+                                        {/* List of smart contracts of the user including the smart contract deployed by us, OR the user can select "other" option and manually enter his smart contract address*/}
+                                        <input type="text" class="form-control" id="exampleInputName" aria-describedby="NameHelp" placeholder="0x7a1C29e5462989dB8680AaF5b9c1FeD6BDC16303" hidden/>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="exampleFormControlColl">Blockchain</label>
                                         <small id="DescHelp" class="form-text text-muted">If you want to change your current Blockchain, you can click this button.</small>
                                         {/* <BlockchainSelectionModal style={{ display: "flex", margin: "auto" }} value="Change Blockchain"/> */}

@@ -361,6 +361,13 @@ export const getCurrentWalletConnected = async () => {
                                         <label for="exampleFormControlColl">Smart contract</label>
                                         <small id="DescHelp" class="form-text text-muted">You can either deploy your NFT on our TNM's smart contract, or you can choose one of your own own smart contract.</small>
                                         {/* List of smart contracts of the user including the smart contract deployed by us, OR the user can select "other" option and manually enter his smart contract address*/}
+                                        <select class="form-control" id="exampleColl">
+                                            <option>Default Contract "0x7a1C29e5462989dB8680AaF5b9c1FeD6BDC16303" </option>
+                                            <option>0x03ef23f801D2bc9B2A839DD476a16842C0066456</option>
+                                            <option>...</option>
+                                            <option>Other</option>
+                                        </select>
+                                        {/* If the user selects Other then the line here under should appear and the selection list above should be hidden */}
                                         <input type="text" class="form-control" id="exampleInputName" aria-describedby="NameHelp" placeholder="0x7a1C29e5462989dB8680AaF5b9c1FeD6BDC16303" hidden/>
                                     </div>
                                     <div class="form-group">

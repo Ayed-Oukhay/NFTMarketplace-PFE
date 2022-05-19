@@ -63,9 +63,10 @@ export const deploySC = async (name, symbol, baseuri, features, access, license)
             access: access,
             license: license,
         };
-        // Sending the smart contract object to the backend to be treated and the ndeployed
+        // Sending the smart contract object to the backend to be treated and then deployed
         axios.post('http://localhost:7000/contract', contractObject).then(res => {
             console.log(res.data);
+
         }).catch((error) => {
             console.log(error)
         });
@@ -191,7 +192,7 @@ export default function Deploy() {
                                     <input type="text" class="form-control" id="exampleInputName" aria-describedby="NameHelp" placeholder="MIT" onChange={(event) => setLicense(event.target.value)} />
                                 </div>
                                 <br />
-                                <button type="button" class="btn btn-primary" onClick={onDeployPressed}><i className="tim-icons icon-check-2" /> &nbsp;&nbsp; Deploy Smart Contract</button>
+                                <button type="button" class="btn btn-primary" onClick={onDeployPressed}><i className="tim-icons icon-check-2"/> &nbsp;&nbsp; Deploy Smart Contract</button>
                                 <p id="status">{status}</p>
                             </form>
                         </section>

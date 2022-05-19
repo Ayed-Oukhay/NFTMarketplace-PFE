@@ -11,19 +11,24 @@
   "author": "Ayed Oukhay",
   "license": "ISC",
   "dependencies": {
-    "@nomiclabs/hardhat-ethers": "^2.0.5",
-    "@nomiclabs/hardhat-etherscan": "^3.0.3",
     "@openzeppelin/contracts": "^4.0.0",
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
-    "ethers": "^5.6.5",
     "express": "^4.18.1",
-    "hardhat": "^2.9.3",
     "helmet": "^5.0.2",
     "mongodb": "^4.5.0",
     "mongoose": "^6.3.2",
     "nodemon": "^2.0.16",
     "web3": "^1.7.3"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.6",
+    "@nomiclabs/hardhat-etherscan": "^3.0.3",
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
+    "chai": "^4.3.6",
+    "ethereum-waffle": "^3.4.4",
+    "ethers": "^5.6.6",
+    "hardhat": "^2.9.5"
   }
 }

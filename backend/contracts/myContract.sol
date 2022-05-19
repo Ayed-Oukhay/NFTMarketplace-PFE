@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.1;
 
 // implements the ERC721 standard
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -10,14 +10,14 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 // Here we need to get the contract object sent from the frontend React app and replace the properties of the contract hereunder
 
 // Accessing the Ownable method ensures that only the creator of the smart contract can interact with it
-contract NFT is ERC721, Ownable {
+contract myContract is ERC721, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private currentTokenId;
 
     /// @dev Base token URI used as a prefix by tokenURI().
     string public baseTokenURI;
     
-    constructor() ERC721("NFTTutorial", "NFT") {
+    constructor() ERC721("MyToken", "MTK") {
         baseTokenURI = "";
     }
     

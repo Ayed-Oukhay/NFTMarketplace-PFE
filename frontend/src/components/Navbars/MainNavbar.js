@@ -4,6 +4,7 @@ import Modal from "../../views/pages/Authenticate";
 //import { Redirect } from 'react-router-dom'
 //import MintNFT from "../../views/examples/MintNFT";
 import BlockchainSelectionModal from "../../views/pages/BlockchainSelection";
+import * as fcl from "@onflow/fcl"; // used to call and configure the flow wallet (Blocto)
 
 // reactstrap components
 import {
@@ -27,6 +28,12 @@ export default function PageNavbar() {
   const [collapseOpen, setCollapseOpen] = React.useState(false);
   const [collapseOut, setCollapseOut] = React.useState("");
   const [color, setColor] = React.useState("navbar-transparent");
+
+  // ------------------ Flow (Blocto) Wallet configuration used later in the authentication process ------------------
+  fcl.config()
+  .put("accessNode.api", "https://access-testnet.onflow.org") // connect to Flow testnet
+  .put("discovery.wallet", "https://fcl-discovery.onflow.org/testnet/authn") // use Blocto testnet wallet
+// ------------------------------------------------------------------------------------------------------------------
 
   // Accessing the history instance created by React
   const history = useHistory();
@@ -73,8 +80,17 @@ export default function PageNavbar() {
   const CreateSmartContract = () => {
     // Checking if the user is currently connected to a wallet 
     // if wallet redirect to smart contract creation form
-    history.push("/create-smart-contract");
     // else alert "You're not currently connected to any wallet."
+    // if (window.web3.eth.accounts.length > 0) {
+    //   history.push("/create-smart-contract");
+    // } else if (window.solana && window.solana.isPhantom) {
+    //   history.push("/create-smart-contract");
+    // } else if (fcl.currentUser().snapshot()) {
+    //   history.push("/create-smart-contract");
+    // } else { 
+    //   window.alert("You need to be at least connected to one wallet to create a smart contract");
+    // }
+    history.push("/create-smart-contract");
   }
   return (
     <Navbar className={"fixed-top " + color} color-on-scroll="100" expand="lg">

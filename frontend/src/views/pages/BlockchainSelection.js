@@ -41,20 +41,17 @@ const BlockchainSelectionModal = (props) => {
             const web3 = new Web3(provider);
             const accounts = await web3.eth.getAccounts();
             if (accounts.length < 1) { // if the user is not connected, requesting metamask authentication
-                await provider.request({
+                const current = await provider.request({
                     method: "eth_requestAccounts",
                 });
                 // ------------------- Creating the user and adding it to the database -------------------
                 const userObject = {
-                    $addToSet: { 
-                        walletAddresses: accounts[0] 
-                    }
+                    walletAddresses: current[0],
                 };
+                // console.log(userObject);
                 axios.post('http://localhost:7000/user', userObject).then((res) => {
-
-                    //res.data.walletAddresses.Add(accounts[0]);
-                    
                     console.log(res.data)
+                    // console.log(userObject)
                 }).catch((error) => {
                     console.log(error)
                 });

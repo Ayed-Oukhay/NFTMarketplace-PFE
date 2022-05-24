@@ -8,16 +8,22 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 // Here we need to get the contract object sent from the frontend React app and replace the properties of the contract hereunder
+import router from "../src/routes/contractRoutes";
 
 // Accessing the Ownable method ensures that only the creator of the smart contract can interact with it
 contract myContract is ERC721, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private currentTokenId;
 
+    string name = "";
+    string symbol= "";
+
     /// @dev Base token URI used as a prefix by tokenURI().
     string public baseTokenURI;
     
-    constructor() ERC721("MyToken", "MTK") {
+    constructor() ERC721(name, symbol) {
+        name = name;
+        symbol = symbol;
         baseTokenURI = "";
     }
     

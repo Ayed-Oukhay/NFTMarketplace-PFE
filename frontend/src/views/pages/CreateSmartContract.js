@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, setState } from "react";
 import "./MintNFT.css";
 
 // core components
@@ -54,6 +54,7 @@ export const deploySC = async (name, symbol, baseuri, features, access, license)
             status: "❗Please make sure all fields are completed before deploying your smart contract.",
         }
     } else {
+
         // Creating the smart contract object
         const contractObject = {
             name: name,
@@ -66,23 +67,23 @@ export const deploySC = async (name, symbol, baseuri, features, access, license)
         // Sending the smart contract object to the backend to be treated and then deployed
         axios.post('http://localhost:7000/contract', contractObject).then(res => {
             console.log(res.data);
+            // Checking if the transaction passed in the backend and retunr the transaction hash
+            // const txhash = ... ;
+            // if (...) {
+            // return {
+            //     success: true,
+            //     status: "✅ Check out your transaction on Polygonscan: https://mumbai.polygonscan.com/tx/" + txHash,
+            // }
+            // } else {
+            //    return {
+            //        success: false,
+            //        status: "😥 Something went wrong! Please try again later.",
+            //    }
+            // }
 
         }).catch((error) => {
             console.log(error)
         });
-        // Checking if the transaction passed in the backend and retunr the transaction hash
-        // const txhash = ... ;
-        // if (...) {
-        // return {
-        //     success: true,
-        //     status: "✅ Check out your transaction on Polygonscan: https://mumbai.polygonscan.com/tx/" + txHash,
-        // }
-        // } else {
-        //    return {
-        //        success: false,
-        //        status: "😥 Something went wrong! Please try again later.",
-        //    }
-        // }
     }
 }
 // *****************************************************************************
@@ -95,9 +96,16 @@ export default function Deploy() {
     const [name, setName] = useState("");
     const [symbol, setSymbol] = useState("");
     const [baseuri, setBaseURI] = useState("");
-    const [features, setFeatures] = useState("");
+    const [features, setFeatures] = useState([]);
     const [access, setAccessControl] = useState("");
     const [license, setLicense] = useState("");
+
+    // handleChange for the radio boxes of the Access Control features of the smart contract
+    const handleChange = e => {
+        setAccessControl(
+            e.target.value
+        );
+    };
 
     const onDeployPressed = async () => { // Function to create the smart contract once the form is submitted
         const address = await getCurrentWalletConnected();
@@ -153,7 +161,7 @@ export default function Deploy() {
                                                     id={`custom-checkbox-${index}`}
                                                     name={name}
                                                     value={name}
-                                                    onChange={(event) => setFeatures(event.target.value)}
+                                                    onChange={(event) => setFeatures(features.concat(event.target.value))}
                                                 /> &nbsp;&nbsp;
                                                 <label htmlFor={`custom-checkbox-${index}`}>{name}</label>
                                             </div>
@@ -165,12 +173,12 @@ export default function Deploy() {
                                     <label for="exampleFormControlColl">Access Control *</label>
                                     <small id="DescHelp" class="form-text text-muted">Control how to, or who has access to your smart contract.</small>
                                     <label>
-                                        <input type="radio" id="ownable_hover" value="Ownable" onChange={(event) => setAccessControl(event.target.value)}/>
+                                        <input type="radio" id="ownable_hover" value="Ownable" onChange={handleChange} />
                                         &nbsp;&nbsp; Ownable
                                     </label>
                                     &nbsp;&nbsp;&nbsp;&nbsp;
                                     <label>
-                                        <input type="radio" id="roles_hover" value="Roles" />
+                                        <input type="radio" id="roles_hover" value="Roles" onChange={handleChange} />
                                         &nbsp;&nbsp; Roles
                                     </label>
                                     <UncontrolledTooltip
@@ -192,7 +200,7 @@ export default function Deploy() {
                                     <input type="text" class="form-control" id="exampleInputName" aria-describedby="NameHelp" placeholder="MIT" onChange={(event) => setLicense(event.target.value)} />
                                 </div>
                                 <br />
-                                <button type="button" class="btn btn-primary" onClick={onDeployPressed}><i className="tim-icons icon-check-2"/> &nbsp;&nbsp; Deploy Smart Contract</button>
+                                <button type="button" class="btn btn-primary" onClick={onDeployPressed}><i className="tim-icons icon-check-2" /> &nbsp;&nbsp; Deploy Smart Contract</button>
                                 <p id="status">{status}</p>
                             </form>
                         </section>

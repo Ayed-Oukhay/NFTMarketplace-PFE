@@ -6,14 +6,21 @@ const user = require('../models/userModel');
 
 // ----------- Create user -------------
 router.route('/').post((req, res, next) => {
-    user.create(req.body, (error, data) => {
-        if (error) {
-            return next(error)
-        } else {
-            console.log(data)
-            res.json(data)
-        }
-    })
+    // checking of a user already exists, then we can just redirect the user instead of creating a new one, to not create a conflict in the DB
+    const userObj = user.findById(req.params.id);
+    if (!userObj) {
+        res.redirect('/mint-nft');
+        console.log("User already exists, redirecting to the minting page");
+    } else {
+        user.create(req.body, (error, data) => {
+            if (error) {
+                return next(error)
+            } else {
+                console.log(data)
+                res.json(data)
+            }
+        })
+    }
 });
 // Or we can use the implemented method in the UserController:
 // router.post('/', UserController.create);

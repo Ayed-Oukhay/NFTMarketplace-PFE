@@ -11,7 +11,14 @@ require("@nomiclabs/hardhat-etherscan");
 const { ALCHEMY_POLYGON_KEY, POLYGONSCAN_API_KEY, ACCOUNT_PRIVATE_KEY } = process.env;
 
 module.exports = {
-  solidity: "0.8.1",
+  solidity: {
+    version: "0.8.1",
+    overrides: {
+      "contracts/myContract.sol":{
+        version: "0.8.1",
+      }
+    }
+  },
   defaultNetwork: "mumbai",
   networks: {
     hardhat: {},

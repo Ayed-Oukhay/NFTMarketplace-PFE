@@ -55,6 +55,10 @@ export const deploySC = async (name, symbol, baseuri, features, access, license)
         }
     } else {
 
+        // Getting the connected user 
+        const currentUser = await window.ethereum.request({
+            method: "eth_requestAccounts",
+        });
         // Creating the smart contract object
         const contractObject = {
             name: name,
@@ -63,11 +67,12 @@ export const deploySC = async (name, symbol, baseuri, features, access, license)
             features: features,
             access: access,
             license: license,
+            owner: currentUser[0],
         };
         // Sending the smart contract object to the backend to be treated and then deployed
         axios.post('http://localhost:7000/contract', contractObject).then(res => {
             console.log(res.data);
-            // Checking if the transaction passed in the backend and retunr the transaction hash
+            // Checking if the transaction passed in the backend and returning the transaction hash
             // const txhash = ... ;
             // if (...) {
             // return {

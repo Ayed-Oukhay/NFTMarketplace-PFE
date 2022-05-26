@@ -20,6 +20,7 @@
     "mongodb": "^4.5.0",
     "mongoose": "^6.3.2",
     "nodemon": "^2.0.16",
+    "solc": "^0.8.1",
     "web3": "^1.7.3"
   },
   "devDependencies": {

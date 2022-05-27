@@ -80,11 +80,11 @@ router.route('/:id/addwallet').put((req, res, next) => {
     })
 })
 
-// ----------- Adding a smart contract address to a user -------------
+// ----------- Adding a smart contract address to a user -----------
 router.route('/:id/addcontract').put((req, res, next) => {
     user.findByIdAndUpdate(req.params.id, {
         $addToSet: { 
-            smartContracts: req.body.smartContracts
+            smartContracts: req.body.txHash
         }
     }, (error, data) => {
         if (error) {

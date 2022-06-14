@@ -1,35 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import classnames from "classnames";
-// javascript plugin used to create scrollbars on windows
-import PerfectScrollbar from "perfect-scrollbar";
-// reactstrap components
+import PerfectScrollbar from "perfect-scrollbar"; // javascript plugin used to create scrollbars on windows
+import { useHistory } from "react-router-dom";
+// import Web3 from 'web3';
+import axios from 'axios';
+
+// ------------ reactstrap components ----------------
 import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  Label,
-  FormGroup,
-  Form,
-  Input,
-  FormText,
-  NavItem,
-  NavLink,
-  Nav,
-  Table,
-  TabContent,
-  TabPane,
-  Container,
-  Row,
-  Col,
-  UncontrolledTooltip,
-  UncontrolledCarousel,
+  Card, Button, CardHeader, CardBody, Label, FormGroup, Form, Input, FormText, NavItem, NavLink, Nav,
+  Table, TabContent, TabPane, Container, Row, Col, UncontrolledTooltip, UncontrolledCarousel
 } from "reactstrap";
 
-// core components
+// ------------ core components ----------------
 import Navbar from "components/Navbars/MainNavbar.js";
 import Footer from "components/Footer/Footer.js";
+import NFTContainer from "./NFTContainer.js";
 
+require('dotenv').config();
+const alchemykey = process.env.REACT_APP_ALCHEMY_KEY;
+
+// ------------ Slider items ------------
 const carouselItems = [
   {
     src: require("assets/img/denys.jpg").default,
@@ -47,9 +37,11 @@ const carouselItems = [
     caption: "Stocks, United States",
   },
 ];
+// ------------------------------------
 
 let ps = null;
 
+// ********* Beginning the main function *********
 export default function ProfilePage() {
   const [tabs, setTabs] = React.useState(1);
   React.useEffect(() => {
@@ -71,7 +63,71 @@ export default function ProfilePage() {
       }
       document.body.classList.toggle("profile-page");
     };
-  },[]);
+  }, []);
+
+  // -------- Accessing the history instance created by React ------------
+  const history = useHistory();
+
+  // ------------ Creating a user instance to display the user data ------------
+  const [userInfo, setUserInfo] = useState("");
+
+
+  // --------- Function to get the connected user's profile on page load-----------
+  useEffect(async () => {
+    try {
+      const addressArray = await window.ethereum.request({
+        method: "eth_accounts",
+      });
+      if (addressArray.length > 0) {
+        // ------------- Getting the list of all the users in the DB -------------
+        axios.get('http://localhost:7000/user').then((response) => {
+          const users = response.data;
+          //console.log(users)
+          //var stringifiedUserObj = new Object();
+          for (var i = 0; i <= users.length; i++) {
+            // ------------- Getting the specific user object from the DB -------------
+            if (users[i].walletAddresses.includes(addressArray[0])) {
+              // console.log("user found!")
+              const FoundUser = users[i];
+              // ------ Creating a user object ------
+              let userObj = {
+                nonce: FoundUser.nonce,
+                username: FoundUser.username,
+                walletAddresses: FoundUser.walletAddresses,
+                description: FoundUser.desc,
+                profilePicture: FoundUser.img,
+                smartContracts: FoundUser.smartContracts,
+              }
+              // ------------------------------------
+              //stringifiedUserObj = JSON.stringify(userObj);
+              setUserInfo(userObj);
+              break;
+            }
+            else {
+              console.log("User not found!");
+            }
+            // ------------------------------------------------------------------------
+          }
+        }).catch(error => console.error(`Error: ${error}`));
+        // ------------------------------------------------------------------------  
+
+        // --------------- Getting the NFTs of the connected user ---------------
+        const api_resp = await fetch(`${alchemykey}/getNFTs/?owner=${addressArray[0]}`); 
+        // ---> fetching the alchemy (mumbai-testnet) api to get the NFTs of the connected user in a descending order (to get the latest added NFT) and waiting for the response
+        const nft_data = await api_resp.json();
+        console.log(nft_data);
+        // ----------------------------------------------------------------------
+      }
+      else {
+        history.push("/");
+        window.alert("Something went wrong, please verify that you are connected");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }, [userInfo]);
+  // ----------------------------------------------------------------------------
+
   return (
     <>
       <Navbar />
@@ -88,15 +144,13 @@ export default function ProfilePage() {
             src={require("assets/img/path4.png").default}
           />
           <Container className="align-items-center">
+            {/* {console.log(userInfo.profilePicture)} */}
             <Row>
               <Col lg="6" md="6">
-                <h1 className="profile-title text-left">Mike Scheinder</h1>
-                <h5 className="text-on-back">01</h5>
+                <h1 className="profile-title text-left">{userInfo.username}</h1>
+                <h5 className="text-on-back">{userInfo.nonce}</h5>
                 <p className="profile-description">
-                  Offices parties lasting outward nothing age few resolve.
-                  Impression to discretion understood to we interested he
-                  excellence. Him remarkably use projection collecting. Going
-                  about eat forty world has round miles.
+                  {userInfo.description}
                 </p>
                 <div className="btn-wrapper profile pt-3">
                   <Button
@@ -141,9 +195,10 @@ export default function ProfilePage() {
                 <Card className="card-coin card-plain">
                   <CardHeader>
                     <img
-                      alt="..."
+                      alt="ImageNotFound"
                       className="img-center img-fluid rounded-circle"
-                      src={require("assets/img/mike.jpg").default}
+                      // src={require(`${userInfo.profilePicture}`)}
+                      src={userInfo.profilePicture}
                     />
                     <h4 className="title">Transactions</h4>
                   </CardHeader>
@@ -283,8 +338,14 @@ export default function ProfilePage() {
                 </Card>
               </Col>
             </Row>
+
           </Container>
         </div>
+        {/* ------------------------------- User NFT List Section ------------------------------- */}
+        <div className="section">
+          <NFTContainer />
+        </div>
+        {/* ------------------------------------------------------------------------------------- */}
         <div className="section">
           <Container>
             <Row className="justify-content-between">
@@ -325,7 +386,7 @@ export default function ProfilePage() {
             </Row>
           </Container>
         </div>
-        <section className="section">
+        {/* <section className="section">
           <Container>
             <Row>
               <Col md="6">
@@ -422,7 +483,7 @@ export default function ProfilePage() {
               </Col>
             </Row>
           </Container>
-        </section>
+        </section> */}
         <Footer />
       </div>
     </>

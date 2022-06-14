@@ -24,6 +24,7 @@ import {
   Button,
 } from "reactstrap";
 
+// *********************** Main function **************************************
 export default function PageNavbar() {
   const [collapseOpen, setCollapseOpen] = React.useState(false);
   const [collapseOut, setCollapseOut] = React.useState("");
@@ -31,9 +32,9 @@ export default function PageNavbar() {
 
   // ------------------ Flow (Blocto) Wallet configuration used later in the authentication process ------------------
   fcl.config()
-  .put("accessNode.api", "https://access-testnet.onflow.org") // connect to Flow testnet
-  .put("discovery.wallet", "https://fcl-discovery.onflow.org/testnet/authn") // use Blocto testnet wallet
-// ------------------------------------------------------------------------------------------------------------------
+    .put("accessNode.api", "https://access-testnet.onflow.org") // connect to Flow testnet
+    .put("discovery.wallet", "https://fcl-discovery.onflow.org/testnet/authn") // use Blocto testnet wallet
+  // ------------------------------------------------------------------------------------------------------------------
 
   // Accessing the history instance created by React
   const history = useHistory();
@@ -88,10 +89,59 @@ export default function PageNavbar() {
     // } else if (fcl.currentUser().snapshot()) {
     //   history.push("/create-smart-contract");
     // } else { 
-    //   window.alert("You need to be at least connected to one wallet to create a smart contract");
+    //   window.alert("You need to be connected to at least one wallet to create a smart contract");
     // }
     history.push("/create-smart-contract");
   }
+
+  // ********** Getting the current connected wallet address **********
+  const onProfileClick = async () => {
+    // ---------- Checking if the user is connected to the Polygon wallet ----------
+    if (window.ethereum) { // Checking if metamask is even installed on the browser
+      try {
+        const addressArray = await window.ethereum.request({
+          method: "eth_accounts",
+        });
+        if (addressArray.length > 0) {
+          console.log(addressArray[0]);
+          history.push("/profile-page");
+          return {
+            address: addressArray[0],
+            status: "👆🏽 Write a message in the text-field above.",
+          };
+        }
+        else {
+          window.alert("🦊   You're not currently connected, please connect to a wallet to continue");
+          return {
+            address: "",
+            status: "🦊 Connect to Metamask using the top right button.",
+          };
+        }
+      } catch (err) {
+        return {
+          address: "",
+          status: "😥 " + err.message,
+        };
+      }
+    } else { // If the metamask browser extention is not installed
+      return {
+        address: "",
+        status: (
+          <span>
+            <p>
+              {" "}
+              🦊{" "}
+              <a target="_blank" href={`https://metamask.io/download.html`}>
+                You must install Metamask, a virtual Ethereum wallet, in your browser.
+              </a>
+            </p>
+          </span>
+        ),
+      };
+    }
+  };
+  // **************************************************************************
+
   return (
     <Navbar className={"fixed-top " + color} color-on-scroll="100" expand="lg">
       <Container>
@@ -203,13 +253,17 @@ export default function PageNavbar() {
             </NavItem>
 
             <NavItem>
-              <UncontrolledDropdown>
+              <Button onClick={onProfileClick} className="nav-link d-none d-lg-block" color="secondary" type="button">
+                <img alt="..." src={require("../../assets/img/user.png").default} style={{ width: 30, height: 30 }} />
+              </Button>
+
+              {/* <UncontrolledDropdown>
                 <DropdownToggle style={{ background: "none", padding: 0, marginTop: 5 }} >
                   <img alt="..." src={require("../../assets/img/user.png").default} style={{ width: 30, height: 30 }} />
                 </DropdownToggle>
                 <DropdownMenu>
                   <li>
-                    <DropdownItem to="/profile-page" tag={Link}>
+                    <DropdownItem onClick={onProfileClick} tag="a">
                       Profile
                     </DropdownItem>
                   </li>
@@ -219,7 +273,7 @@ export default function PageNavbar() {
                     </DropdownItem>
                   </li>
                 </DropdownMenu>
-              </UncontrolledDropdown>
+              </UncontrolledDropdown> */}
             </NavItem>
           </Nav>
         </Collapse>

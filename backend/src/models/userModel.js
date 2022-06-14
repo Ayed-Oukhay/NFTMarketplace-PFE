@@ -23,6 +23,13 @@ var schema = new mongoose.Schema({
     },
 	password: {
 		type: String,
+	},
+	img:{
+        type: String,
+		default: "assets/img/default-user.png",
+    },
+	desc:{
+		type: String,
 	}
 });
 

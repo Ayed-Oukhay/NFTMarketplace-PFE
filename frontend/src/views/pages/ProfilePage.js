@@ -71,7 +71,6 @@ export default function ProfilePage() {
   // ------------ Creating a user instance to display the user data ------------
   const [userInfo, setUserInfo] = useState("");
 
-
   // --------- Function to get the connected user's profile on page load-----------
   useEffect(async () => {
     try {
@@ -83,7 +82,6 @@ export default function ProfilePage() {
         axios.get('http://localhost:7000/user').then((response) => {
           const users = response.data;
           //console.log(users)
-          //var stringifiedUserObj = new Object();
           for (var i = 0; i <= users.length; i++) {
             // ------------- Getting the specific user object from the DB -------------
             if (users[i].walletAddresses.includes(addressArray[0])) {
@@ -99,7 +97,6 @@ export default function ProfilePage() {
                 smartContracts: FoundUser.smartContracts,
               }
               // ------------------------------------
-              //stringifiedUserObj = JSON.stringify(userObj);
               setUserInfo(userObj);
               break;
             }
@@ -112,11 +109,35 @@ export default function ProfilePage() {
         // ------------------------------------------------------------------------  
 
         // --------------- Getting the NFTs of the connected user ---------------
-        const api_resp = await fetch(`${alchemykey}/getNFTs/?owner=${addressArray[0]}`); 
-        // ---> fetching the alchemy (mumbai-testnet) api to get the NFTs of the connected user in a descending order (to get the latest added NFT) and waiting for the response
+        // --- fetching the alchemy (mumbai-testnet) api to get the NFTs of the connected user in a descending order (to get the latest added NFT) and waiting for the response ---
+        const api_resp = await fetch(`${alchemykey}/getNFTs/?owner=${addressArray[0]}`);
         const nft_data = await api_resp.json();
-        console.log(nft_data);
-        // ----------------------------------------------------------------------
+        // --- Displaying the fetched NFTs in their dedicated section of the profile page ---
+        const nftContainer = document.getElementById("nftItems");
+        const assets = nft_data.ownedNfts;
+        if (assets.length === 0) { // if the user has no NFTs, return "You have no NFTs yet"
+          return //...
+        }
+        else {
+          assets.forEach((nft) => {
+            // -------- Getting the NFT data from the api's response --------
+            const { metadata: { image }, metadata: { name }, metadata: { description } } = nft; // we're using metadata:{prop} syntax because the information in the api response gets the name, image and description of the NFT metadata in a second-level key, so to access it we need to use that syntax 
+            // -------- Listing the items in cards --------
+            const newElement = document.createElement('div');
+            newElement.innerHTML = `
+              <div class="card" style="margin-left: 10px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); width: 230px; height:350px; float:left;">
+                <center><img src='${image}' alt="Avatar" style="width:200px; height:180px; margin-top: 10px;" /></center>
+                  <div class="container" style="padding: 2px 16px;">
+                    <h4><b>${name}</b></h4>
+                    <p>${description}</p>
+                  </div>
+                  <input type="submit" value="Display">
+              </div> `
+            nftContainer.appendChild(newElement);
+            // ---------------- Ending the list NFT ----------------
+          })
+        }
+        // --------------------------------- End of getting the NFTs of the connected user ---------------------------------
       }
       else {
         history.push("/");
@@ -342,8 +363,8 @@ export default function ProfilePage() {
           </Container>
         </div>
         {/* ------------------------------- User NFT List Section ------------------------------- */}
-        <div className="section">
-          <NFTContainer />
+        <div className="section" id="nftItems">
+          {/* ----------- The user's NFTs go here ----------- */}
         </div>
         {/* ------------------------------------------------------------------------------------- */}
         <div className="section">
@@ -386,105 +407,7 @@ export default function ProfilePage() {
             </Row>
           </Container>
         </div>
-        {/* <section className="section">
-          <Container>
-            <Row>
-              <Col md="6">
-                <Card className="card-plain">
-                  <CardHeader>
-                    <h1 className="profile-title text-left">Contact</h1>
-                    <h5 className="text-on-back">03</h5>
-                  </CardHeader>
-                  <CardBody>
-                    <Form>
-                      <Row>
-                        <Col md="6">
-                          <FormGroup>
-                            <label>Your Name</label>
-                            <Input defaultValue="Mike" type="text" />
-                          </FormGroup>
-                        </Col>
-                        <Col md="6">
-                          <FormGroup>
-                            <label>Email address</label>
-                            <Input placeholder="mike@email.com" type="email" />
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col md="6">
-                          <FormGroup>
-                            <label>Phone</label>
-                            <Input defaultValue="001-12321345" type="text" />
-                          </FormGroup>
-                        </Col>
-                        <Col md="6">
-                          <FormGroup>
-                            <label>Company</label>
-                            <Input defaultValue="CreativeTim" type="text" />
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col md="12">
-                          <FormGroup>
-                            <label>Message</label>
-                            <Input placeholder="Hello there!" type="text" />
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                      <Button
-                        className="btn-round float-right"
-                        color="primary"
-                        data-placement="right"
-                        id="tooltip341148792"
-                        type="button"
-                      >
-                        Send text
-                      </Button>
-                      <UncontrolledTooltip
-                        delay={0}
-                        placement="right"
-                        target="tooltip341148792"
-                      >
-                        Can't wait for your message
-                      </UncontrolledTooltip>
-                    </Form>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col className="ml-auto" md="4">
-                <div className="info info-horizontal">
-                  <div className="icon icon-primary">
-                    <i className="tim-icons icon-square-pin" />
-                  </div>
-                  <div className="description">
-                    <h4 className="info-title">Find us at the office</h4>
-                    <p>
-                      Bld Mihail Kogalniceanu, nr. 8, <br />
-                      7652 Bucharest, <br />
-                      Romania
-                    </p>
-                  </div>
-                </div>
-                <div className="info info-horizontal">
-                  <div className="icon icon-primary">
-                    <i className="tim-icons icon-mobile" />
-                  </div>
-                  <div className="description">
-                    <h4 className="info-title">Give us a ring</h4>
-                    <p>
-                      Michael Jordan <br />
-                      +40 762 321 762 <br />
-                      Mon - Fri, 8:00-22:00
-                    </p>
-                  </div>
-                </div>
-              </Col>
-            </Row>
-          </Container>
-        </section> */}
-        <Footer />
+      <Footer />
       </div>
     </>
   );

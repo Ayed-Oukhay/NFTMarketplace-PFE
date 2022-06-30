@@ -436,31 +436,28 @@ export default function ProfilePage() {
         <div className="section">
           <Container>
             <Row className="justify-content-between" id="nftItems">
-              <Col md="3">
+              <Col md="12">
                 <h1 className="profile-title text-left">NFTs</h1>
                 <h5 className="text-on-back">02</h5>
                 <p className="profile-description text-left">
                   This collection of NFTs is a list of random NFTs that I have created for the purpose of this test
                 </p>
                 <button className='py-2 btn-primary rounded-sm w-full hover:bg-slate-100' style={{ width: '250px' }} onClick={() => { fetchNFTs(owner, contractAddress, setNFTs) }}><i class="tim-icons icon-refresh-01" /> &nbsp; Load NFTs</button>
-                <br /><br />
+                <br/><br/>
+                <div>
+                  {
+                    NFTs ? NFTs.map(NFT => {
+                      return (
+                        <div>
+                          <NftCard image={NFT.media[0].gateway} id={NFT.id.tokenId} title={NFT.title} address={NFT.contract.address} description={NFT.description}  style={{ float: 'left', marginLeft: '10px' }}></NftCard>
+                        </div>
+                      )
+                    }) : <div>No NFTs found</div>
+                  }
+                </div>
               </Col>
             </Row>
-            {
-              NFTs ? NFTs.map(NFT => {
-                return (
-                  <div>
-                    <Container>
-                      <Row className="justify-content-between" id="nftItems">
-                        <Col md="3">
-                          <NftCard image={NFT.media[0].gateway} id={NFT.id.tokenId} title={NFT.title} address={NFT.contract.address} description={NFT.description}></NftCard>
-                        </Col>
-                      </Row>
-                    </Container>
-                  </div>
-                )
-              }) : <div>No NFTs found</div>
-            }
+
           </Container>
         </div>
         {/* ------------------------------------------- End user NFTs list ----------------------------------------- */}

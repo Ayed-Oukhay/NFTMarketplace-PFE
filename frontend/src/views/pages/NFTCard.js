@@ -2,7 +2,7 @@
 
 const NftCard = ({ image, id, title, address, description, attributes }) => {
     return (
-        <div className="card" style={{boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)', width: '260px', height:'350px', float:'left'}} >
+        <div className="card d-flex mt-auto" style={{boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)', width: '260px', height:'350px', float:'left', marginLeft: '10px'}} >
             <center><img className='w-full rounded-t-md' style={{width:'230px', height:'180px', marginTop: '10px'}} alt="Avatar" key={id} src={image}></img></center>
             <div className="container" style={{padding: '2px 16px'}}>
                 <div className="flex mb-3">
@@ -15,7 +15,7 @@ const NftCard = ({ image, id, title, address, description, attributes }) => {
                 </div>
                 <p>{description ? description.slice(0, 50) : "No Description"}...</p>
             </div>
-            <div className="flex flex-wrap justify-center items-center p-3 ">
+            {/* <div className="flex flex-wrap justify-center items-center p-3 ">
                 {attributes?.length > 0 && attributes.map(attribute => {
                     return (
                         <div className="w-1/2 mb-2 flex justify-start flex-col">
@@ -24,7 +24,7 @@ const NftCard = ({ image, id, title, address, description, attributes }) => {
                         </div>
                     )
                 })}
-            </div>
+            </div> */}
         </div>
     )
 }

@@ -1,10 +1,32 @@
-// This file will serve to render the NFTs of the connected user in the Profile Page
-import React from 'react';
 
-const NFTCard = () => {
+
+const NftCard = ({ image, id, title, address, description, attributes }) => {
     return (
-        <div className="nft-card">
+        <div className="card" style={{boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)', width: '260px', height:'350px', float:'left'}} >
+            <center><img className='w-full rounded-t-md' style={{width:'230px', height:'180px', marginTop: '10px'}} alt="Avatar" key={id} src={image}></img></center>
+            <div className="container" style={{padding: '2px 16px'}}>
+                <div className="flex mb-3">
+                    <div className="flex-grow">
+                        <h4 className="text-xl">{title} <h6>{`${id.slice(0, 2)}...${id.slice(id.length - 3)}`}</h6></h4>
+                    </div>
+                    <div className="flex mr-3">
+                        <a target="_blank" className="text-blue-700" href={`https://mumbai.polygonscan.com/address/${address}`}>{`${address.slice(0, 4)}...${address.slice(address.length - 4)}`}</a>
+                    </div>
+                </div>
+                <p>{description ? description.slice(0, 50) : "No Description"}...</p>
+            </div>
+            <div className="flex flex-wrap justify-center items-center p-3 ">
+                {attributes?.length > 0 && attributes.map(attribute => {
+                    return (
+                        <div className="w-1/2 mb-2 flex justify-start flex-col">
+                            <p className="mr-2 font-bold">{attribute.trait_type}:</p>
+                            <p className="text-sm">{attribute.value}</p>
+                        </div>
+                    )
+                })}
+            </div>
         </div>
     )
 }
-export default NFTCard;
+
+export default NftCard

@@ -2,19 +2,21 @@ import React, { useEffect, useState } from "react";
 import classnames from "classnames";
 import PerfectScrollbar from "perfect-scrollbar"; // javascript plugin used to create scrollbars on windows
 import { useHistory } from "react-router-dom";
-// import Web3 from 'web3';
 import axios from 'axios';
+import NftCard from './NFTCard';
+import { fetchNFTs } from '../../utils/fetchNFTs.js';
+// import TestModal from './NFTModal';
 
 // ------------ reactstrap components ----------------
 import {
   Card, Button, CardHeader, CardBody, Label, FormGroup, Form, Input, FormText, NavItem, NavLink, Nav,
-  Table, TabContent, TabPane, Container, Row, Col, UncontrolledTooltip, UncontrolledCarousel
+  Table, TabContent, TabPane, Container, Row, Col, UncontrolledTooltip, UncontrolledCarousel, Modal
 } from "reactstrap";
 
 // ------------ core components ----------------
 import Navbar from "components/Navbars/MainNavbar.js";
 import Footer from "components/Footer/Footer.js";
-import NFTContainer from "./NFTContainer.js";
+import { Hidden } from "@mui/material";
 
 require('dotenv').config();
 const alchemykey = process.env.REACT_APP_ALCHEMY_KEY;
@@ -71,6 +73,18 @@ export default function ProfilePage() {
   // ------------ Creating a user instance to display the user data ------------
   const [userInfo, setUserInfo] = useState("");
 
+  // ------------ State variables and handlers to display each NFT's properties ------------
+  // const [NFTInfo, setNFTInfo] = useState([]);
+  // const [showNFTModal, setShowNFTModal] = useState(false);
+  // const [show, setShow] = useState(false);
+
+  // const handleClose = () => setShow(false);
+  // const handleOpen = () => setShow(true);
+  const [owner, setOwner] = useState("")
+  const [contractAddress, setContractAddress] = useState("0x7a1C29e5462989dB8680AaF5b9c1FeD6BDC16303")
+  const [NFTs, setNFTs] = useState("")
+  // --------------------------------------------------------------------------------------
+
   // --------- Function to get the connected user's profile on page load-----------
   useEffect(async () => {
     try {
@@ -82,7 +96,7 @@ export default function ProfilePage() {
         axios.get('http://localhost:7000/user').then((response) => {
           const users = response.data;
           //console.log(users)
-          for (var i = 0; i <= users.length; i++) {
+          for (var i = 0; i < users.length; i++) {
             // ------------- Getting the specific user object from the DB -------------
             if (users[i].walletAddresses.includes(addressArray[0])) {
               // console.log("user found!")
@@ -98,7 +112,7 @@ export default function ProfilePage() {
               }
               // ------------------------------------
               setUserInfo(userObj);
-              break;
+              setOwner(userObj.walletAddresses)
             }
             else {
               console.log("User not found!");
@@ -110,33 +124,37 @@ export default function ProfilePage() {
 
         // --------------- Getting the NFTs of the connected user ---------------
         // --- fetching the alchemy (mumbai-testnet) api to get the NFTs of the connected user in a descending order (to get the latest added NFT) and waiting for the response ---
-        const api_resp = await fetch(`${alchemykey}/getNFTs/?owner=${addressArray[0]}`);
-        const nft_data = await api_resp.json();
+        // const api_resp = await fetch(`${alchemykey}/getNFTs/?owner=${addressArray[0]}`);
+        // const nft_data = await api_resp.json();
+
         // --- Displaying the fetched NFTs in their dedicated section of the profile page ---
-        const nftContainer = document.getElementById("nftItems");
-        const assets = nft_data.ownedNfts;
-        if (assets.length === 0) { // if the user has no NFTs, return "You have no NFTs yet"
-          return //...
-        }
-        else {
-          assets.forEach((nft) => {
-            // -------- Getting the NFT data from the api's response --------
-            const { metadata: { image }, metadata: { name }, metadata: { description } } = nft; // we're using metadata:{prop} syntax because the information in the api response gets the name, image and description of the NFT metadata in a second-level key, so to access it we need to use that syntax 
-            // -------- Listing the items in cards --------
-            const newElement = document.createElement('div');
-            newElement.innerHTML = `
-              <div class="card" style="margin-left: 10px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); width: 230px; height:350px; float:left;">
-                <center><img src='${image}' alt="Avatar" style="width:200px; height:180px; margin-top: 10px;" /></center>
-                  <div class="container" style="padding: 2px 16px;">
-                    <h4><b>${name}</b></h4>
-                    <p>${description}</p>
-                  </div>
-                  <input type="submit" value="Display">
-              </div> `
-            nftContainer.appendChild(newElement);
-            // ---------------- Ending the list NFT ----------------
-          })
-        }
+        // const nftContainer = document.getElementById("nftItems");
+        // const assets = nft_data.ownedNfts;
+        // if (assets.length === 0) { // if the user has no NFTs, return "You have no NFTs yet"
+        //   return //...
+        // }
+        // else {
+        //   assets.forEach((nft) => {
+        //     // -------- Getting the NFT data from the api's response --------
+        //     const { metadata: { image }, metadata: { name }, metadata: { description } } = nft; // we're using metadata:{prop} syntax because the information in the api response gets the name, image and description of the NFT metadata in a second-level key, so to access it we need to use that syntax 
+        //     // -------- Listing the items in cards --------
+        //     const newElement = document.createElement('div');
+        //     newElement.innerHTML = `
+        //         <div class="card d-flex mt-auto" style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); width: 260px; height:350px; float:left;">
+        //           <center><img src='${image}' alt="Avatar" style="width:230px; height:180px; margin-top: 10px;" /></center>
+        //             <div class="container" style="padding: 2px 16px;">
+        //               <h4><b>${name}</b></h4>
+        //               <p>${description}</p>
+        //             </div>
+        //             <div class="card-footer mt-auto align-self-end">
+        //               <center><input type="submit" value="Display" style="width:230px;" onclick=${ModalContent()} ></center>
+        //             </div>
+        //         </div>
+        //         `
+        //     nftContainer.appendChild(newElement);
+        //     // ---------------- Ending the list NFT ----------------
+        //   })
+        // }
         // --------------------------------- End of getting the NFTs of the connected user ---------------------------------
       }
       else {
@@ -146,8 +164,38 @@ export default function ProfilePage() {
     } catch (err) {
       console.log(err);
     }
-  }, [userInfo]);
+  }, []);
   // ----------------------------------------------------------------------------
+
+  // ------------ Event to call show the NFT Modal on item click ------------
+  // const nftEvents = {
+  //   onClick: (e, nft) => {
+  //     console.log("nft");
+  //     setNFTInfo(nft);
+  //     toggleTrueFlase();
+  //   },
+  // };
+
+  // const toggleTrueFalse = () => {
+  //   setShowNFTModal(handleOpen);
+  // };
+
+  // function ModalContent() {
+  //   return (
+  //     <Modal show={show} onHide={handleClose}>
+  //       <Modal.Header closeButton>
+  //         <Modal.Title>{NFTInfo.name}</Modal.Title>
+  //       </Modal.Header>
+  //       <Modal.Body>
+  //         ...
+  //       </Modal.Body>
+  //       <Modal.Footer>
+  //         <Button variant="secondary" onClick={handleClose}>Close</Button>
+  //       </Modal.Footer>
+  //     </Modal>
+  //   )
+  // }
+  // ------------------------------------------------------------------------
 
   return (
     <>
@@ -165,14 +213,19 @@ export default function ProfilePage() {
             src={require("assets/img/path4.png").default}
           />
           <Container className="align-items-center">
+            {/* --------------- Displaying the connected user's infos --------------- */}
             {/* {console.log(userInfo.profilePicture)} */}
             <Row>
               <Col lg="6" md="6">
                 <h1 className="profile-title text-left">{userInfo.username}</h1>
                 <h5 className="text-on-back">{userInfo.nonce}</h5>
+                <h4 className="title text-left">Address</h4>
+                <h6 className="description text-left">{userInfo.walletAddresses}</h6>
+                <br /><br />
                 <p className="profile-description">
                   {userInfo.description}
                 </p>
+
                 <div className="btn-wrapper profile pt-3">
                   <Button
                     className="btn-icon btn-round"
@@ -218,8 +271,9 @@ export default function ProfilePage() {
                     <img
                       alt="ImageNotFound"
                       className="img-center img-fluid rounded-circle"
-                      // src={require(`${userInfo.profilePicture}`)}
-                      src={userInfo.profilePicture}
+                      //src={require(`${userInfo.profilePicture}`)}
+                      //src={userInfo.profilePicture}
+                      src={require("assets/img/ayed.jpg").default}
                     />
                     <h4 className="title">Transactions</h4>
                   </CardHeader>
@@ -359,14 +413,58 @@ export default function ProfilePage() {
                 </Card>
               </Col>
             </Row>
-
+            {/* -------------------------------- End user infos --------------------------------- */}
           </Container>
         </div>
         {/* ------------------------------- User NFT List Section ------------------------------- */}
-        <div className="section" id="nftItems">
-          {/* ----------- The user's NFTs go here ----------- */}
+
+        {/* <div className="section">
+          <Container>
+            <Row className="justify-content-between" id="nftItems">
+              <Col md="3">
+                <h1 className="profile-title text-left">NFTs</h1>
+                <h5 className="text-on-back">02</h5>
+                <p className="profile-description text-left">
+                  This collection of NFTs is a list of random NFTs that I have created for the purpose of this test
+                </p>
+              </Col>
+            </Row>
+            {showNFTModal ? ModalContent() : null}
+          </Container>
+        </div> */}
+
+        <div className="section">
+          <Container>
+            <Row className="justify-content-between" id="nftItems">
+              <Col md="3">
+                <h1 className="profile-title text-left">NFTs</h1>
+                <h5 className="text-on-back">02</h5>
+                <p className="profile-description text-left">
+                  This collection of NFTs is a list of random NFTs that I have created for the purpose of this test
+                </p>
+                <button className='py-2 btn-primary rounded-sm w-full hover:bg-slate-100' style={{ width: '250px' }} onClick={() => { fetchNFTs(owner, contractAddress, setNFTs) }}><i class="tim-icons icon-refresh-01" /> &nbsp; Load NFTs</button>
+                <br /><br />
+              </Col>
+            </Row>
+            {
+              NFTs ? NFTs.map(NFT => {
+                return (
+                  <div>
+                    <Container>
+                      <Row className="justify-content-between" id="nftItems">
+                        <Col md="3">
+                          <NftCard image={NFT.media[0].gateway} id={NFT.id.tokenId} title={NFT.title} address={NFT.contract.address} description={NFT.description}></NftCard>
+                        </Col>
+                      </Row>
+                    </Container>
+                  </div>
+                )
+              }) : <div>No NFTs found</div>
+            }
+          </Container>
         </div>
-        {/* ------------------------------------------------------------------------------------- */}
+        {/* ------------------------------------------- End user NFTs list ----------------------------------------- */}
+
         <div className="section">
           <Container>
             <Row className="justify-content-between">
@@ -377,13 +475,9 @@ export default function ProfilePage() {
               </Col>
               <Col md="5">
                 <h1 className="profile-title text-left">Projects</h1>
-                <h5 className="text-on-back">02</h5>
+                <h5 className="text-on-back">03</h5>
                 <p className="profile-description text-left">
-                  An artist of considerable range, Ryan — the name taken by
-                  Melbourne-raised, Brooklyn-based Nick Murphy — writes,
-                  performs and records all of his own music, giving it a warm,
-                  intimate feel with a solid groove structure. An artist of
-                  considerable range.
+                  With NFTs ranging from Photography, to digital artwork and mythical creatures such Pokemons, these are the NFTs that I have created for the purpose of this test.
                 </p>
                 <div className="btn-wrapper pt-3">
                   <Button
@@ -407,7 +501,7 @@ export default function ProfilePage() {
             </Row>
           </Container>
         </div>
-      <Footer />
+        <Footer />
       </div>
     </>
   );

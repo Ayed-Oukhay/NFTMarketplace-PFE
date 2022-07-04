@@ -9,6 +9,7 @@ import "assets/demo/demo.css";
 import LandingPage from "views/pages/LandingPage";
 //import LandingPage from "views/pages/LandingPage.js";
 import ProfilePage from "views/pages/ProfilePage.js";
+import NFT from "views/pages/DisplayNFT.js";
 import MintNFT from "views/pages/MintNFT.js";
 import CreateSmartContract from "views/pages/CreateSmartContract.js";
 
@@ -19,6 +20,7 @@ ReactDOM.render(
       <Route path="/mint-nft" render={(props) => <MintNFT {...props} />} />
       <Route path="/profile-page" render={(props) => <ProfilePage {...props} />} />
       <Route path="/create-smart-contract" render={(props) => <CreateSmartContract {...props} />} />
+      <Route path="/nft" render={(props) => <NFT {...props} />} />
       <Redirect to="/" />
     </Switch>
   </Router>,

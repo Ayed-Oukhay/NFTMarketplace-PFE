@@ -1,14 +1,28 @@
 import { useHistory } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+require('dotenv').config();
 
-
+const endpoint = process.env.REACT_APP_ALCHEMY_KEY;
 
 const NftCard = ({ image, id, title, address, description, attributes }) => {
+
+    const [NFT, setNFT] = useState("");
+    const [contractAddress, setContractAddress] = useState("0x7a1C29e5462989dB8680AaF5b9c1FeD6BDC16303");
+    const [owner, setOwner] = useState("");
+
+
     // Accessing the history instance created by React
     const history = useHistory();
 
     const DisplayNft = () => {
         history.push(`/nft/${id}`);
     }
+
+    useEffect(async () => {
+        await fetch(`${endpoint}/getNFTs?owner=${owner}&contractAddresses%5B%5D=${contractAddress}`).then(data => data.json())
+    
+    }, [])
+
     return (
         <div className="card d-flex mt-auto" style={{ boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)', width: '260px', height: '400px', float: 'left', marginLeft: '10px' }} >
             <center><img className='w-full rounded-t-md' style={{ width: '230px', height: '180px', marginTop: '10px' }} alt="Avatar" key={id} src={image}></img></center>

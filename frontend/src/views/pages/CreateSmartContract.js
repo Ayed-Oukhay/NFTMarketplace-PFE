@@ -72,23 +72,15 @@ export const deploySC = async (name, symbol, baseuri, features, access, license)
         // Sending the smart contract object to the backend to be treated and then deployed
         axios.post('http://localhost:7000/contract', contractObject).then(res => {
             console.log(res.data);
-            // Checking if the transaction passed in the backend and returning the transaction hash
-            // const txhash = ... ;
-            // if (...) {
-            // return {
-            //     success: true,
-            //     status: "✅ Check out your transaction on Polygonscan: https://mumbai.polygonscan.com/tx/" + txHash,
-            // }
-            // } else {
-            //    return {
-            //        success: false,
-            //        status: "😥 Something went wrong! Please try again later.",
-            //    }
-            // }
-
+            // Returning the transaction hash to the frontend
+            return {
+                success: true,
+                status: "✅ Check out your transaction on Polygonscan: https://mumbai.polygonscan.com/tx/"+res.data.txHash,
+            }
         }).catch((error) => {
             console.log(error)
         });
+
     }
 }
 // *****************************************************************************
@@ -178,7 +170,7 @@ export default function Deploy() {
                                     <label for="exampleFormControlColl">Access Control *</label>
                                     <small id="DescHelp" class="form-text text-muted">Control how to, or who has access to your smart contract.</small>
                                     <label>
-                                        <input type="radio" id="ownable_hover" value="Ownable" onChange={handleChange} />
+                                        <input type="radio" id="ownable_hover" value="Ownable" onChange={handleChange}/>
                                         &nbsp;&nbsp; Ownable
                                     </label>
                                     &nbsp;&nbsp;&nbsp;&nbsp;

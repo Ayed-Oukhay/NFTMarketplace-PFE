@@ -15,16 +15,16 @@ export const FeaturesList = [
         name: "Pausable",
         // Keeps track of individual units for voting in on-chain governance, with a way to delegate one's voting power to a trusted account.
     },
-    {
-        name: "Votes",
-        // Keeps track of individual units for voting in on-chain governance, with a way to delegate one's voting power to a trusted account.
-    },
-    {
-        name: "Enumerable",
-        // Allows on-chain enumeration of all tokens or those owned by an account. Increases gas cost of transfers.
-    },
-    {
-        name: "URI Storage",
-        // Allows updating token URIs for individual token IDs.
-    },
+    // {
+    //     name: "Votes",
+    //     // Keeps track of individual units for voting in on-chain governance, with a way to delegate one's voting power to a trusted account.
+    // },
+    // {
+    //     name: "Enumerable",
+    //     // Allows on-chain enumeration of all tokens or those owned by an account. Increases gas cost of transfers.
+    // },
+    // {
+    //     name: "URI Storage",
+    //     // Allows updating token URIs for individual token IDs.
+    // },
 ];

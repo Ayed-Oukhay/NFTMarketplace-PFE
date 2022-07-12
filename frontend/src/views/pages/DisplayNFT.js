@@ -1,8 +1,45 @@
 // ------------ core components ----------------
+import React, { useEffect, useState } from "react";
 import Navbar from "components/Navbars/MainNavbar.js";
 import Footer from "components/Footer/Footer.js";
 
-const NFT = ({ image, id, title, address, description, attributes }) => {
+require('dotenv').config();
+
+const endpoint = process.env.REACT_APP_ALCHEMY_KEY;
+
+
+const NFT = (props) => {
+
+    const [NFTs, setNFTs] = useState("");
+    const [owner, setOwner] = useState("");
+    const [contractAddress, setContractAddress] = useState("0x7a1C29e5462989dB8680AaF5b9c1FeD6BDC16303");
+    const [SpecNFT, setSpecNFT] = useState("");
+
+    //console.log(id);
+
+    // useEffect(async () => {
+
+    //     const addressArray = await window.ethereum.request({
+    //         method: "eth_accounts",
+    //     });
+    //     setOwner(addressArray[0]);
+    //     //console.log(addressArray[0]);
+
+    //     let data = await fetch(`${endpoint}/getNFTs?owner=${addressArray[0]}&contractAddresses%5B%5D=${contractAddress}`).then(data => data.json());
+    //     setNFTs(data.ownedNfts);
+
+    //     let NFTList = data.ownedNfts;
+
+    //     for (let i = 0; i < NFTList.length; i++) {
+    //         if (NFTList[i].id === props.id) {
+    //             setSpecNFT(NFTList[i]);
+    //         }
+    //     }
+
+    //     console.log(SpecNFT);
+
+    // }, []);
+
     return (
         <>
             <Navbar />
@@ -21,7 +58,7 @@ const NFT = ({ image, id, title, address, description, attributes }) => {
                             </div>
                             <div class="details col-md-6">
                                 <br />
-                                <h3 class="product-title">men's shoes fashion</h3>
+                                <h3 class="product-title">Ayed's NFT</h3>
                                 <div class="rating">
                                     <div class="stars">
                                         <span class="fa fa-star checked"></span>
@@ -48,7 +85,7 @@ const NFT = ({ image, id, title, address, description, attributes }) => {
                                     <span class="color blue"></span>
                                 </h5>
                                 <div class="action">
-                                    <button class="add-to-cart btn btn-default" type="button"><i class="fas fa-credit-card"/>&nbsp;&nbsp;&nbsp;Buy now</button>
+                                    <button class="add-to-cart btn btn-default" type="button"><i class="fas fa-credit-card" />&nbsp;&nbsp;&nbsp;Buy now</button>
                                     <button class="like btn btn-default" type="button"><span class="fa fa-heart"></span></button>
                                 </div>
                                 <br />

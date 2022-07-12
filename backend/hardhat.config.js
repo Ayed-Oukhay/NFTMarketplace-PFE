@@ -16,6 +16,30 @@ module.exports = {
     overrides: {
       "contracts/myContract.sol":{
         version: "0.8.1",
+      },
+      "contracts/onlyMintable.sol":{
+        version: "0.8.1",
+      },
+      "contracts/onlyBurnable.sol":{
+        version: "0.8.1",
+      },
+      "contracts/onlyPausable.sol":{
+        version: "0.8.1",
+      },
+      "contracts/mintableBurnable.sol":{
+        version: "0.8.1",
+      },
+      "contracts/mintablePausable.sol":{
+        version: "0.8.1",
+      },
+      "contracts/burnablePausable.sol":{
+        version: "0.8.1",
+      },
+      "contracts/noFeatures.sol":{
+        version: "0.8.1",
+      },
+      "contracts/fullContract.sol":{
+        version: "0.8.1",
       }
     }
   },

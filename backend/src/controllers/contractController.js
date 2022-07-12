@@ -19,8 +19,23 @@ exports.deploy = async (req, res) => {
         const contractObject = req.body;
         console.log(contractObject);
 
-        // --- Fetching the compiled contract using ethers.js ---
-        const contract = await ethers.getContractFactory("myContract");
+        // ----------------- Fetching the compiled contract using ethers.js basing on the selected features by the user to deploy a custom contract -----------------
+        const contract = await ethers.getContractFactory("noFeatures");
+        // ----- if 1 feature was selected -----
+        // if contractObject.features.length == 1 {
+            // if contractObject.features[0] == 'Mintable' {}
+            // else if contractObject.features[0] == 'Burnable' {}
+            // else if contractObject.features[0] == 'Pausable' {}
+        // }
+        // ----- if 2 features were selected -----
+        // else if contractObject.features.length == 2 {
+            // if contractObject.features.includes('Mintable') && contractObject.features.includes('Burnable') {}
+            // else if contractObject.features.includes('Mintable') && contractObject.features.includes('Pausable') {}
+            // else if contractObject.features.includes('Pausable') && contractObject.features.includes('Burnable') {}
+        // }
+        // ----- if all features were selected -----
+        // else if contractObject.features.length == 3 {}
+
         console.log('Deploying myContract...');
         const CustomSC = await contract.deploy(); // calling deploy() will return an async Promise that we can await on 
         await CustomSC.deployed();
@@ -32,6 +47,16 @@ exports.deploy = async (req, res) => {
             txHash: CustomSC.address.toString(),
             userAddress: contractObject.owner,
         }
+
+        // axios.post('http://localhost:3000/create-smart-contract', deployedContract).then(res => {
+        //     return {
+        //         success: true,
+        //         status: "✅ Check out your transaction on Polygonscan: https://mumbai.polygonscan.com/tx/"+res.data.txHash,
+        //     }
+        // }).catch((error) => {
+        //     console.log(error)
+        // });
+
         console.log("The following contract is being added to the DB : ")
         console.log(deployedContract);
         // 2- Adding it to the DB

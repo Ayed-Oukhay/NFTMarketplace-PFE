@@ -78,20 +78,36 @@ export default function PageNavbar() {
     history.push("/mint-nft");
   };
 
-  const CreateSmartContract = () => {
-    // Checking if the user is currently connected to a wallet 
-    // if wallet redirect to smart contract creation form
-    // else alert "You're not currently connected to any wallet."
-    // if (window.web3.eth.accounts.length > 0) {
-    //   history.push("/create-smart-contract");
-    // } else if (window.solana && window.solana.isPhantom) {
-    //   history.push("/create-smart-contract");
-    // } else if (fcl.currentUser().snapshot()) {
-    //   history.push("/create-smart-contract");
-    // } else { 
-    //   window.alert("You need to be connected to at least one wallet to create a smart contract");
-    // }
-    history.push("/create-smart-contract");
+  const CreateSmartContract = async () => {
+    // ---------- Checking if the user is connected to the Polygon wallet ----------
+    if (window.ethereum) { // Checking if metamask is even installed on the browser
+      try {
+        const addressArray = await window.ethereum.request({
+          method: "eth_accounts",
+        });
+        if (addressArray.length > 0) {
+          console.log(addressArray[0]);
+          history.push("/create-smart-contract");
+          return {
+            address: addressArray[0],
+            status: "👆🏽 Write a message in the text-field above.",
+          };
+        }
+        else {
+          window.alert("🦊   You're not currently connected, please connect to a wallet to continue");
+          return {
+            address: "",
+            status: "🦊 Connect to Metamask using the top right button.",
+          };
+        }
+      } catch (err) {
+        return {
+          address: "",
+          status: "😥 " + err.message,
+        };
+      }
+
+    }
   }
 
   // ********** Getting the current connected wallet address **********

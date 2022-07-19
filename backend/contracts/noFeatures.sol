@@ -7,12 +7,12 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 // Accessing the Ownable method ensures that only the creator of the smart contract can interact with it
-contract myContract is ERC721, Ownable {
+contract noFeatures is ERC721, Ownable {
 
     /// @dev Base token URI used as a prefix by tokenURI().
     string public baseTokenURI;
     
-    constructor() ERC721(_name,_symbol) {
+    constructor(string memory _name, string memory _symbol) ERC721(_name,_symbol) {
         _name = _name;
         _symbol = _symbol;
         baseTokenURI = "";

@@ -15,7 +15,7 @@ contract myContract is ERC721, Ownable {
     /// @dev Base token URI used as a prefix by tokenURI().
     string public baseTokenURI;
     
-    constructor() ERC721(_name,_symbol) {
+    constructor(string memory _name, string memory _symbol) ERC721(_name,_symbol) {
         _name = _name;
         _symbol = _symbol;
         baseTokenURI = "";

@@ -10,14 +10,14 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 
 // Accessing the Ownable method ensures that only the creator of the smart contract can interact with it
-contract myContract is ERC721, Pausable, Ownable, ERC721Burnable {
+contract fullContract is ERC721, Pausable, Ownable, ERC721Burnable {
     using Counters for Counters.Counter;
     Counters.Counter private currentTokenId;
 
     /// @dev Base token URI used as a prefix by tokenURI().
     string public baseTokenURI;
     
-    constructor() ERC721(_name,_symbol) {
+    constructor(string memory _name, string memory _symbol) ERC721(_name,_symbol) {
         _name = _name;
         _symbol = _symbol;
         baseTokenURI = "";

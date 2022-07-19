@@ -69,17 +69,34 @@ export const deploySC = async (name, symbol, baseuri, features, access, license)
             license: license,
             owner: currentUser[0],
         };
+
         // Sending the smart contract object to the backend to be treated and then deployed
         axios.post('http://localhost:7000/contract', contractObject).then(res => {
             console.log(res.data);
-            // Returning the transaction hash to the frontend
-            return {
-                success: true,
-                status: "✅ Check out your transaction on Polygonscan: https://mumbai.polygonscan.com/tx/"+res.data.txHash,
-            }
+            // console.log(contractObject.txHash);        
         }).catch((error) => {
             console.log(error)
         });
+
+        // --- Waiting until the smart contract has been added to the DB ---
+        const sleep = (milliseconds) => {
+            return new Promise(resolve => setTimeout(resolve, milliseconds))
+        }
+        await sleep(20000) // wait 20 seconds, which I KNOW can be a bit too long but it's a necessary evil for the moment
+
+        // --- Getting the latest smart contract added to the user table in the DB ---
+        const deployer = contractObject.owner;
+
+        const users = await axios.get('http://localhost:7000/user');
+        const user = users.data.find(user => user.walletAddresses[0] === deployer);
+        const contract = user.smartContracts[user.smartContracts.length - 1];
+        // console.log(contract);
+
+        // Returning the transaction hash to the frontend
+        return {
+            success: true,
+            status: "✅ Check out your transaction on Polygonscan: https://mumbai.polygonscan.com/address/"+contract,
+        }
 
     }
 }
@@ -170,7 +187,7 @@ export default function Deploy() {
                                     <label for="exampleFormControlColl">Access Control *</label>
                                     <small id="DescHelp" class="form-text text-muted">Control how to, or who has access to your smart contract.</small>
                                     <label>
-                                        <input type="radio" id="ownable_hover" value="Ownable" onChange={handleChange}/>
+                                        <input type="radio" id="ownable_hover" value="Ownable" onChange={handleChange} />
                                         &nbsp;&nbsp; Ownable
                                     </label>
                                     &nbsp;&nbsp;&nbsp;&nbsp;

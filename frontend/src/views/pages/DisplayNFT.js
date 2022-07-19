@@ -70,7 +70,7 @@ const NFT = (props) => {
                                     <span class="review-no">41 reviews</span>
                                 </div>
                                 <p class="product-description">Suspendisse quos? Tempus cras iure temporibus? Eu laudantium cubilia sem sem! Repudiandae et! Massa senectus enim minim sociosqu delectus posuere.</p>
-                                <h4 class="price">current price: &nbsp;&nbsp;<i class='fab fa-ethereum'>&nbsp; 0.002</i>
+                                <h4 class="price">Current Price: &nbsp;&nbsp;<img src="https://cdn-icons-png.flaticon.com/512/7016/7016537.png" style={{height: '30px'}}/> 0.002
                                     &nbsp;&nbsp;<span>($180)</span></h4>
                                 <p class="vote"><strong>91%</strong> of buyers enjoyed this product! <strong>(87 votes)</strong></p>
                                 <h5 class="sizes">sizes:
@@ -86,7 +86,7 @@ const NFT = (props) => {
                                 </h5>
                                 <div class="action">
                                     <button class="add-to-cart btn btn-default" type="button"><i class="fas fa-credit-card" />&nbsp;&nbsp;&nbsp;Buy now</button>
-                                    <button class="like btn btn-default" type="button"><span class="fa fa-heart"></span></button>
+                                    <button class="like btn btn-default" type="button"><i class="fa fa-heart"/>&nbsp;&nbsp;&nbsp;Add to wishlist </button>
                                 </div>
                                 <br />
                             </div>

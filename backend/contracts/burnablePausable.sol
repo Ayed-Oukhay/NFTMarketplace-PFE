@@ -9,17 +9,16 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 
 // Accessing the Ownable method ensures that only the creator of the smart contract can interact with it
-contract myContract is ERC721, Pausable, Ownable, ERC721Burnable {
-
+contract burnablePausable is ERC721, Pausable, Ownable, ERC721Burnable {
     /// @dev Base token URI used as a prefix by tokenURI().
     string public baseTokenURI;
-    
-    constructor() ERC721(_name,_symbol) {
+
+    constructor(string memory _name, string memory _symbol) ERC721(_name, _symbol) {
         _name = _name;
         _symbol = _symbol;
         baseTokenURI = "";
     }
-    
+
     /// @dev Returns an URI for a given token ID
     function _baseURI() internal view virtual override returns (string memory) {
         return baseTokenURI;
@@ -38,12 +37,11 @@ contract myContract is ERC721, Pausable, Ownable, ERC721Burnable {
         _unpause();
     }
 
-    function _beforeTokenTransfer(address from, address to, uint256 tokenId)
-        internal
-        whenNotPaused
-        override
-    {
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal override whenNotPaused {
         super._beforeTokenTransfer(from, to, tokenId);
     }
-
 }

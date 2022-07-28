@@ -418,21 +418,6 @@ export default function ProfilePage() {
         </div>
         {/* ------------------------------- User NFT List Section ------------------------------- */}
 
-        {/* <div className="section">
-          <Container>
-            <Row className="justify-content-between" id="nftItems">
-              <Col md="3">
-                <h1 className="profile-title text-left">NFTs</h1>
-                <h5 className="text-on-back">02</h5>
-                <p className="profile-description text-left">
-                  This collection of NFTs is a list of random NFTs that I have created for the purpose of this test
-                </p>
-              </Col>
-            </Row>
-            {showNFTModal ? ModalContent() : null}
-          </Container>
-        </div> */}
-
         <div className="section">
           <Container>
             <Row className="justify-content-between" id="nftItems">

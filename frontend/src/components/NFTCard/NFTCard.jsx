@@ -1,20 +1,33 @@
 import "./NFTCard.css";
 import User from "../User/User";
 import Cardnft from "./DefCard";
-import image from "../../assets/img/nft1.jpg";
+import image1 from "../../assets/img/nft1.jpg";
+// import image2 from "../../assets/img/nft.gif";
+// import image3 from "../../assets/img/nft2.gif";
+// import image4 from "../../assets/img/nft4.jpg";
+// import image5 from "../../assets/img/nft3.jpg";
 import imgHoverIcon from "../../assets/img/icon-view.svg";
 
 const NFTCard = (props) => {
+
+  function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  // const NFTImgList = [image1, image2, image3, image4, image5];
+
+  // const randomImg = NFTImgList[Math.floor(Math.random() * NFTImgList.length)];
+
   return (
     <Cardnft className="cardnft">
       <div className="img-container">
-        <img src={image} alt="cube light prism" className="card__img" />
+        <img src={image1} alt="cube light prism" className="card__img" />
         <div className="overlay">
           <img className="hover-icon" src={imgHoverIcon} alt="eye icon" style={{height:50, width:50}}/>
         </div>
       </div>
       <br/>
-      <h2 className="card__title">RedSunset #3129</h2>
+      <h2 className="card__title">RedSunset #{randomInt(999,5999)}</h2>
       {/* <p className="card__body">
         Our Equilibrium collection promotes balance and calm.
       </p> */}
@@ -26,7 +39,7 @@ const NFTCard = (props) => {
               fill="#00FFF8"
             />
           </svg>{" "}
-          0.041 ETH
+          0.0{randomInt(56,99)} ETH
         </p>
         <p className="card__time">
           <svg width="17" height="17" xmlns="http://www.w3.org/2000/svg">
@@ -35,7 +48,7 @@ const NFTCard = (props) => {
               fill="#8BACD9"
             />
           </svg>{" "}
-          3 days left
+          {randomInt(2,10)} days left
         </p>
       </div>
       <User />

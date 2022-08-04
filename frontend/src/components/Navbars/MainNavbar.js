@@ -127,7 +127,7 @@ export default function PageNavbar() {
           };
         }
         else {
-          window.alert("🦊   You're not currently connected, please connect to a wallet to continue");
+          window.alert("🦊   You're not currently connected, please connect to a wallet to get access to your profile");
           return {
             address: "",
             status: "🦊 Connect to Metamask using the top right button.",

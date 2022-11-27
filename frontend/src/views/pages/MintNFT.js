@@ -227,10 +227,11 @@ export default function MintNFT() {
         const file = event.target.files[0];
         const reader = new window.FileReader();
         reader.readAsArrayBuffer(file);
-        reader.onloadend = () => {
+        reader.onloadend = async () => {
             // uploading the image to ipfs and getting the hash
             const imgBuffer = Buffer.from(reader.result);
-            ipfs.files.add(imgBuffer, (error, result) => {
+            // console.log(imgBuffer);
+            await ipfs.files.add(imgBuffer, (error, result) => {
                 if (error) {
                     console.log(error);
                 } else {
